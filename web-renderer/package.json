@@ -1,0 +1,39 @@
+{
+  "name": "markdown-quicklook-renderer",
+  "version": "1.0.0",
+  "description": "Web renderer for macOS Quick Look Extension",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack --mode production",
+    "watch": "webpack --mode development --watch",
+    "test": "jest"
+  },
+  "dependencies": {
+    "github-markdown-css": "^5.2.0",
+    "highlight.js": "^11.7.0",
+    "katex": "^0.16.4",
+    "markdown-it": "^13.0.1",
+    "markdown-it-emoji": "^2.0.2",
+    "markdown-it-footnote": "^3.0.3",
+    "markdown-it-katex": "^2.0.3",
+    "markdown-it-mark": "^3.0.1",
+    "markdown-it-sub": "^1.0.0",
+    "markdown-it-sup": "^1.0.0",
+    "markdown-it-task-lists": "^2.1.1",
+    "mermaid": "^11.12.2"
+  },
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "@types/markdown-it": "^14.1.2",
+    "css-loader": "^6.7.3",
+    "html-webpack-plugin": "^5.5.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "style-loader": "^3.3.1",
+    "ts-jest": "^29.4.6",
+    "ts-loader": "^9.4.2",
+    "typescript": "^5.9.3",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1"
+  }
+}

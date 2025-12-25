@@ -1,0 +1,35 @@
+name: MarkdownQuickLook
+options:
+  bundleIdPrefix: com.markdownquicklook
+  deploymentTarget:
+    macOS: "11.0"
+targets:
+  MarkdownQuickLook:
+    type: application
+    platform: macOS
+    sources: [Sources/MarkdownQuickLook]
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: com.markdownquicklook.app
+      INFOPLIST_KEY_NSMainStoryboardFile: ""
+      ENABLE_PREVIEWS: YES
+      GENERATE_INFOPLIST_FILE: YES
+    dependencies:
+      - target: MarkdownPreview
+        embed: true
+
+  MarkdownPreview:
+    type: app-extension
+    platform: macOS
+    sources:
+      - Sources/MarkdownPreview
+      - path: web-renderer/dist
+        name: dist
+        type: folder
+        buildPhase: resources
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: com.markdownquicklook.app.MarkdownPreview
+      INFOPLIST_FILE: Sources/MarkdownPreview/Info.plist
+      SKIP_INSTALL: YES
+    dependencies:
+      - sdk: QuickLookUI.framework
+      - sdk: WebKit.framework
