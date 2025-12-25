@@ -12,6 +12,7 @@ targets:
       PRODUCT_BUNDLE_IDENTIFIER: com.markdownquicklook.app
       INFOPLIST_FILE: Sources/MarkdownQuickLook/Info.plist
       INFOPLIST_KEY_NSMainStoryboardFile: ""
+      CODE_SIGN_ENTITLEMENTS: Sources/MarkdownQuickLook/MarkdownQuickLook.entitlements
       ENABLE_PREVIEWS: YES
     dependencies:
       - target: MarkdownPreview
@@ -29,6 +30,7 @@ targets:
     settings:
       PRODUCT_BUNDLE_IDENTIFIER: com.markdownquicklook.app.MarkdownPreview
       INFOPLIST_FILE: Sources/MarkdownPreview/Info.plist
+      CODE_SIGN_ENTITLEMENTS: Sources/MarkdownPreview/MarkdownPreview.entitlements
       SKIP_INSTALL: YES
     dependencies:
       - sdk: QuickLookUI.framework

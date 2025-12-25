@@ -11,6 +11,8 @@ class PreviewViewController: NSViewController, QLPreviewingController, WKNavigat
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        NSLog("🔵 MarkdownPreview: viewDidLoad called")
+        
         // Setup WebView Configuration
         let config = WKWebViewConfiguration()
         // Allow access to local files if needed (though QL sandbox restricts this)
@@ -25,14 +27,18 @@ class PreviewViewController: NSViewController, QLPreviewingController, WKNavigat
         self.view.addSubview(webView)
         
         // Load the HTML bundle
-        // We assume the folder "web-renderer/dist" contents are added to the app bundle resources
-        if let htmlPath = Bundle.main.path(forResource: "index", ofType: "html") {
+        // IMPORTANT: Use Bundle(for:) instead of Bundle.main for extensions
+        let bundle = Bundle(for: type(of: self))
+        
+        if let htmlPath = bundle.path(forResource: "dist/index", ofType: "html") {
             let fileURL = URL(fileURLWithPath: htmlPath)
             // Allow read access to the directory containing the HTML file (for bundle.js)
             let dirURL = fileURL.deletingLastPathComponent()
             webView.loadFileURL(fileURL, allowingReadAccessTo: dirURL)
+            NSLog("✅ MarkdownPreview: Loading HTML from: %@", fileURL.path)
         } else {
-            print("Error: index.html not found in bundle")
+            NSLog("❌ MarkdownPreview: index.html NOT FOUND in bundle!")
+            NSLog("   Bundle path: %@", bundle.bundlePath)
             // Fallback for debugging
             webView.loadHTMLString("<h1>Error: index.html not found. Please build the web-renderer.</h1>", baseURL: nil)
         }
@@ -52,14 +58,20 @@ class PreviewViewController: NSViewController, QLPreviewingController, WKNavigat
 
     func preparePreviewOfFile(at url: URL, completionHandler handler: @escaping (Error?) -> Void) {
         
+        NSLog("🔵 MarkdownPreview: preparePreviewOfFile called for: %@", url.path)
+        
         // 1. Read the file content
         do {
             let markdown = try String(contentsOf: url, encoding: .utf8)
             self.markdownContentToLoad = markdown
+            NSLog("✅ MarkdownPreview: Read markdown file (%d bytes)", markdown.count)
             
             // 2. Render if ready, else wait for didFinish
             if isWebViewReady {
+                NSLog("🟢 MarkdownPreview: WebView ready, rendering immediately")
                 renderMarkdown(markdown)
+            } else {
+                NSLog("🟡 MarkdownPreview: WebView not ready, will render after load")
             }
             
             // Note: We call handler(nil) immediately because we have "accepted" the file.
@@ -68,7 +80,7 @@ class PreviewViewController: NSViewController, QLPreviewingController, WKNavigat
             handler(nil)
             
         } catch {
-            print("Failed to read file: \(error)")
+            NSLog("❌ MarkdownPreview: Failed to read file: %@", error.localizedDescription)
             handler(error)
         }
     }

@@ -15,8 +15,11 @@ open ~/Library/Developer/Xcode/DerivedData/MarkdownQuickLook-*/Build/Products/De
 
 Or in Xcode:
 1. Open `MarkdownQuickLook.xcodeproj`
-2. Select **MarkdownQuickLook** scheme
+2. **重要**: 在顶部工具栏确保选择的是 **MarkdownQuickLook** scheme (不是 MarkdownPreview)
+   - 点击 scheme 下拉菜单（在 Run/Stop 按钮旁边）
+   - 选择 "MarkdownQuickLook"
 3. Press `Cmd+R` to run
+4. 如果弹出 "Choose an app to run"，选择任意应用（如 Finder），这是 Extension 的正常行为
 
 **Important**: Keep the app running while testing. This registers the Quick Look extension with the system.
 

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- Quick Look extensions MUST be sandboxed or pkd will reject them -->
+    <key>com.apple.security.app-sandbox</key>
+    <true/>
+
+    <!-- Read-only access to the file the user selected in Finder -->
+    <key>com.apple.security.files.user-selected.read-only</key>
+    <true/>
+
+    <!-- Allow debugging in development builds -->
+    <key>com.apple.security.get-task-allow</key>
+    <true/>
+</dict>
+</plist>
+

@@ -20,6 +20,8 @@
     <string>1</string>
     <key>LSMinimumSystemVersion</key>
     <string>$(MACOSX_DEPLOYMENT_TARGET)</string>
+
+    <!-- Declare the Markdown UTI so the system knows about it -->
     <key>UTImportedTypeDeclarations</key>
     <array>
         <dict>
@@ -40,6 +42,27 @@
                     <string>mdown</string>
                 </array>
             </dict>
+        </dict>
+    </array>
+
+    <!-- Associate our app as a viewer for Markdown documents.
+         This makes Quick Look consider our preview extension when
+         the user previews .md files in Finder. We use LSHandlerRank
+         = Alternate so we don't steal the global default app. -->
+    <key>CFBundleDocumentTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleTypeName</key>
+            <string>Markdown Document</string>
+            <key>LSItemContentTypes</key>
+            <array>
+                <string>net.daringfireball.markdown</string>
+                <string>public.markdown</string>
+            </array>
+            <key>CFBundleTypeRole</key>
+            <string>Viewer</string>
+            <key>LSHandlerRank</key>
+            <string>Alternate</string>
         </dict>
     </array>
 </dict>
