@@ -13,6 +13,10 @@
     <!-- Allow debugging in development builds -->
     <key>com.apple.security.get-task-allow</key>
     <true/>
+
+    <!-- Allow network access for WebView -->
+    <key>com.apple.security.network.client</key>
+    <true/>
 </dict>
 </plist>
 

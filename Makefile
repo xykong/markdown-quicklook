@@ -2,7 +2,10 @@
 
 all: app
 
-generate:
+build_renderer:
+	cd web-renderer && npm install && npm run build
+
+generate: build_renderer
 	@if ! command -v xcodegen >/dev/null; then \
 		echo "Error: xcodegen is not installed. Please install it with 'brew install xcodegen'"; \
 		exit 1; \

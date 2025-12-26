@@ -23,6 +23,9 @@ targets:
     platform: macOS
     sources:
       - Sources/MarkdownPreview
+      - path: web-renderer/dist
+        name: WebRenderer
+        type: folder
     settings:
       PRODUCT_BUNDLE_IDENTIFIER: com.markdownquicklook.app.MarkdownPreview
       INFOPLIST_FILE: Sources/MarkdownPreview/Info.plist
