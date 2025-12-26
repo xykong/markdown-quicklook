@@ -10,8 +10,11 @@ generate: build_renderer
 		echo "Error: xcodegen is not installed. Please install it with 'brew install xcodegen'"; \
 		exit 1; \
 	fi
-	rm -rf MarkdownQuickLook.xcodeproj
-	xcodegen generate
+	@if [ ! -f .build_number ]; then echo 1 > .build_number; fi
+	@n=$$(cat .build_number); \
+	echo "Current Build Number: $$n"; \
+	rm -rf MarkdownQuickLook.xcodeproj; \
+	MARKETING_VERSION=1.0 CURRENT_PROJECT_VERSION=$$n xcodegen generate
 
 app: generate
 	xcodebuild -project MarkdownQuickLook.xcodeproj -scheme MarkdownQuickLook -destination 'platform=macOS' build

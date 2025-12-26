@@ -14,6 +14,18 @@ targets:
       INFOPLIST_KEY_NSMainStoryboardFile: ""
       CODE_SIGN_ENTITLEMENTS: Sources/MarkdownQuickLook/MarkdownQuickLook.entitlements
       ENABLE_PREVIEWS: NO
+      MARKETING_VERSION: ${MARKETING_VERSION}
+      CURRENT_PROJECT_VERSION: ${CURRENT_PROJECT_VERSION}
+    preBuildScripts:
+      - name: Increment Build Number
+        script: |
+          sh "$SRCROOT/scripts/increment_version.sh"
+        runOnlyWhenInstalling: false
+    postBuildScripts:
+      - name: Apply Build Number
+        script: |
+          sh "$SRCROOT/scripts/apply_version.sh"
+        runOnlyWhenInstalling: false
     dependencies:
       - target: MarkdownPreview
         embed: true
@@ -31,5 +43,12 @@ targets:
       INFOPLIST_FILE: Sources/MarkdownPreview/Info.plist
       CODE_SIGN_ENTITLEMENTS: Sources/MarkdownPreview/MarkdownPreview.entitlements
       SKIP_INSTALL: YES
+      MARKETING_VERSION: ${MARKETING_VERSION}
+      CURRENT_PROJECT_VERSION: ${CURRENT_PROJECT_VERSION}
+    postBuildScripts:
+      - name: Apply Build Number
+        script: |
+          sh "$SRCROOT/scripts/apply_version.sh"
+        runOnlyWhenInstalling: false
     dependencies:
       - sdk: QuickLookUI.framework

@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpack = require('webpack');
 
 module.exports = {
   entry: './src/index.ts',
@@ -13,6 +14,13 @@ module.exports = {
       {
         test: /\.css$/i,
         use: ["style-loader", "css-loader"],
+      },
+      {
+        test: /\.(woff|woff2|eot|ttf|otf)$/i,
+        type: 'asset/resource',
+        generator: {
+          filename: 'fonts/[name][ext]'
+        }
       },
     ],
   },
@@ -33,6 +41,10 @@ module.exports = {
       template: 'src/template.html',
       inject: 'body',
       scriptLoading: 'blocking' // Ensure scripts load before we try to use them if manually calling
+    }),
+    new webpack.DefinePlugin({
+      'process.env.BUILD_TIME': JSON.stringify(new Date().toISOString()),
+      'process.env.VERSION': JSON.stringify(require('./package.json').version),
     }),
   ],
 };
