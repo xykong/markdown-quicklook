@@ -38,7 +38,7 @@ struct MarkdownWebView: NSViewRepresentable {
         
         webConfiguration.userContentController = userContentController
         
-        webConfiguration.preferences.setValue(true, forKey: "allowFileAccessFromFileURLs")
+
         #if DEBUG
         webConfiguration.preferences.setValue(true, forKey: "developerExtrasEnabled")
         #endif
