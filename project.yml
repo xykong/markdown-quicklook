@@ -57,3 +57,11 @@ targets:
         runOnlyWhenInstalling: false
     dependencies:
       - sdk: QuickLookUI.framework
+
+  MarkdownTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - Tests/MarkdownTests
+    dependencies:
+      - target: Markdown

@@ -26,25 +26,58 @@ struct MarkdownWebView: NSViewRepresentable {
         let webView = WKWebView(frame: .zero, configuration: webConfiguration)
         webView.navigationDelegate = coordinator
         
-        var bundleURL: URL?
-        if let url = Bundle.main.url(forResource: "index", withExtension: "html", subdirectory: "WebRenderer") {
-            bundleURL = url
-        } else if let url = Bundle.main.url(forResource: "index", withExtension: "html", subdirectory: "dist") {
-            bundleURL = url
-        } else if let url = Bundle.main.url(forResource: "index", withExtension: "html") {
-            bundleURL = url
-        }
+        var bundleURL: URL? = ResourceLoader.findIndexHtml()
         
         if let url = bundleURL {
             let dir = url.deletingLastPathComponent()
+            os_log("Loading HTML from: %{public}@", log: coordinator.logger, type: .debug, url.path)
+            
             do {
-                let htmlContent = try String(contentsOf: url, encoding: .utf8)
+                var htmlContent = try String(contentsOf: url, encoding: .utf8)
+                
+                // Inject Debug JS
+                let debugScript = """
+                <script>
+                window.onerror = function(msg, url, line, col, error) {
+                    var extra = !col ? '' : '\\ncolumn: ' + col;
+                    extra += !error ? '' : '\\nerror: ' + error;
+                    var message = "Error: " + msg + "\\nurl: " + url + "\\nline: " + line + extra;
+                    if(window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.logger) {
+                         window.webkit.messageHandlers.logger.postMessage(message);
+                    }
+                };
+                console.log = function(message) {
+                    if(window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.logger) {
+                         window.webkit.messageHandlers.logger.postMessage("JS Log: " + message);
+                    }
+                };
+                // Verify body existence and change color to verify rendering
+                document.addEventListener('DOMContentLoaded', function() {
+                     if(window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.logger) {
+                         window.webkit.messageHandlers.logger.postMessage("DOM Content Loaded");
+                     }
+                     // Optional: Visual Debug
+                     // document.body.style.backgroundColor = 'lightyellow';
+                });
+                </script>
+                """
+                
+                // Insert script before </head> or at the beginning if not found
+                if let range = htmlContent.range(of: "</head>") {
+                    htmlContent.insert(contentsOf: debugScript, at: range.lowerBound)
+                } else {
+                    htmlContent = debugScript + htmlContent
+                }
+                
                 webView.loadHTMLString(htmlContent, baseURL: dir)
             } catch {
                 os_log("Failed to read index.html: %{public}@", log: coordinator.logger, type: .error, error.localizedDescription)
                 webView.loadFileURL(url, allowingReadAccessTo: dir)
             }
+        } else {
+             os_log("Failed to find index.html in bundle", log: coordinator.logger, type: .error)
         }
+
         
         return webView
     }
@@ -94,6 +127,23 @@ struct MarkdownWebView: NSViewRepresentable {
         }
 
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+            os_log("WebView didFinish navigation", log: logger, type: .debug)
+        }
+        
+        func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+            os_log("WebView didStartProvisionalNavigation", log: logger, type: .debug)
+        }
+        
+        func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+            os_log("WebView didFail navigation: %{public}@", log: logger, type: .error, error.localizedDescription)
+        }
+        
+        func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+            os_log("WebView didFailProvisionalNavigation: %{public}@", log: logger, type: .error, error.localizedDescription)
+        }
+        
+        func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
+            os_log("WebView WebContent process terminated", log: logger, type: .error)
         }
         
         func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
