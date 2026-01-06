@@ -35,7 +35,7 @@ npm test
 cd web-renderer
 npm run build
 ```
-This generates `dist/bundle.js` and `dist/index.html`.
+This generates `dist/index.html` (Single file with inlined assets).
 
 ## Swift Extension
 The Xcode project is generated using **XcodeGen** (Configuration as Code).

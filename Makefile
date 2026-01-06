@@ -3,7 +3,7 @@
 all: app
 
 build_renderer:
-	cd web-renderer && npm install --no-audit --no-fund --loglevel=warn && npm run build -- --logLevel warn
+	cd web-renderer && npm install --no-audit --no-fund --loglevel=warn && npm run build
 
 generate: build_renderer
 	@if ! command -v xcodegen >/dev/null; then \

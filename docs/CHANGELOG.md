@@ -9,6 +9,7 @@
 - **Host App**: Improved `index.html` resource discovery logic to fallback to multiple directories.
 
 ### Fixed
+- **Renderer**: Switched from Webpack/Vite chunked build to **Vite SingleFile** build. This fixes the "White Screen" issue in QuickLook by inlining all JS/CSS/Font assets into a single `index.html`, avoiding CORS/file-access restrictions in the Sandbox.
 - **Build**: Increased Webpack asset size limits to suppress warnings for large bundles (Mermaid/KaTeX/Highlight.js).
 - **Stability**: Added auto-reload recovery when WebView WebContent process terminates.
 - **Security**: Added missing entitlements (Network Client, JIT, Printing, Downloads) to support WebView features and stability.
