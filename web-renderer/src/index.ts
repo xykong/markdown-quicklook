@@ -25,7 +25,6 @@ import 'highlight.js/styles/github.css';
 import 'katex/dist/katex.min.css';
 
 import MarkdownIt from 'markdown-it';
-import mermaid from 'mermaid';
 import hljs from 'highlight.js';
 
 // Import MarkdownIt plugins
@@ -43,16 +42,6 @@ import mark from 'markdown-it-mark';
 import sub from 'markdown-it-sub';
 // @ts-ignore
 import sup from 'markdown-it-sup';
-
-// Configure Mermaid
-try {
-    mermaid.initialize({
-        startOnLoad: false,
-        theme: 'default'
-    });
-} catch (e) {
-    logToSwift("JS: Mermaid init failed: " + e);
-}
 
 // Configure MarkdownIt
 let md: MarkdownIt;
@@ -114,12 +103,12 @@ try {
 // Define global interface for window
 declare global {
     interface Window {
-        renderMarkdown: (text: string, options?: { baseUrl?: string }) => void;
+        renderMarkdown: (text: string, options?: { baseUrl?: string }) => Promise<void>;
     }
 }
 
 // Render function called by Swift
-window.renderMarkdown = function (text: string, options: { baseUrl?: string } = {}) {
+window.renderMarkdown = async function (text: string, options: { baseUrl?: string } = {}) {
     const outputDiv = document.getElementById('markdown-preview');
     if (!outputDiv) {
         logToSwift("JS Error: markdown-preview element not found");
@@ -148,10 +137,22 @@ window.renderMarkdown = function (text: string, options: { baseUrl?: string } = 
 
         outputDiv.innerHTML = tempDiv.innerHTML;
 
-        // 3. Trigger Mermaid rendering
-        mermaid.run({
-            querySelector: '.mermaid'
-        });
+        // 3. Trigger Mermaid rendering if needed
+        if (mermaidBlocks.length > 0) {
+            try {
+                const mermaidModule = await import('mermaid');
+                const mermaid = mermaidModule.default;
+                mermaid.initialize({
+                    startOnLoad: false,
+                    theme: 'default'
+                });
+                await mermaid.run({
+                    querySelector: '.mermaid'
+                });
+            } catch (err) {
+                 logToSwift("JS Error loading/running mermaid: " + err);
+            }
+        }
         
     } catch (e) {
         logToSwift("JS Error during render: " + e);

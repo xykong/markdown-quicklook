@@ -15,7 +15,7 @@ describe('Markdown Renderer', () => {
     jest.clearAllMocks();
   });
 
-  test('should render mermaid diagram using mermaid.run API', () => {
+  test('should render mermaid diagram using mermaid.run API', async () => {
     const markdown = `
 # Title
 \`\`\`mermaid
@@ -25,7 +25,7 @@ graph TD;
     `;
 
     // Execution
-    window.renderMarkdown(markdown);
+    await window.renderMarkdown(markdown);
 
     // Verification
     const preview = document.getElementById('markdown-preview');
@@ -42,11 +42,11 @@ graph TD;
     });
   });
 
-  test('should rewrite relative image paths using baseUrl', () => {
+  test('should rewrite relative image paths using baseUrl', async () => {
     const markdown = '![img](./pic.png)';
     
     // Execution
-    window.renderMarkdown(markdown, { baseUrl: '/Users/me/docs' });
+    await window.renderMarkdown(markdown, { baseUrl: '/Users/me/docs' });
 
     // Verification
     const preview = document.getElementById('markdown-preview');
