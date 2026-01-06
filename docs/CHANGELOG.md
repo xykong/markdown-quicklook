@@ -27,6 +27,7 @@
   - Updated `project.yml` to bundle renderer assets into the Host App.
 - **Documentation**:
   - Added `docs/DESIGN_HOST_APP_BROWSER.md`.
+  - Added `docs/OPTIMIZATION_ROADMAP.md`: Detailed analysis of performance and UX improvement opportunities.
 
 ## [1.0.0] - 2025-12-27
 
