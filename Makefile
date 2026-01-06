@@ -17,7 +17,7 @@ generate: build_renderer
 	MARKETING_VERSION=1.0 CURRENT_PROJECT_VERSION=$$n xcodegen generate
 
 app: generate
-	xcodebuild -project MarkdownPreviewEnhanced.xcodeproj -scheme Markdown -configuration $(or $(CONFIGURATION),Release) -destination 'platform=macOS' build
+	xcodebuild -project MarkdownPreviewEnhanced.xcodeproj -scheme Markdown -configuration $(or $(CONFIGURATION),Release) -destination 'platform=macOS' clean build
 
 install:
 	./scripts/install.sh

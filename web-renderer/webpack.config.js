@@ -49,4 +49,8 @@ module.exports = {
       'process.env.VERSION': JSON.stringify(require('./package.json').version),
     }),
   ],
+  performance: {
+    maxEntrypointSize: 4000000,
+    maxAssetSize: 4000000,
+  },
 };

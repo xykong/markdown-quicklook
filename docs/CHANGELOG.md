@@ -8,6 +8,7 @@
 - **Host App**: Improved `index.html` resource discovery logic to fallback to multiple directories.
 
 ### Fixed
+- **Build**: Increased Webpack asset size limits to suppress warnings for large bundles (Mermaid/KaTeX/Highlight.js).
 - **Stability**: Added auto-reload recovery when WebView WebContent process terminates.
 - **Security**: Added missing entitlements (Network Client, JIT, Printing, Downloads) to support WebView features and stability.
 

@@ -14,6 +14,7 @@ targets:
         name: WebRenderer
         type: folder
     settings:
+      ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
       PRODUCT_NAME: "Markdown Preview Enhanced"
       PRODUCT_BUNDLE_IDENTIFIER: com.xykong.Markdown
       INFOPLIST_FILE: Sources/Markdown/Info.plist
@@ -22,16 +23,13 @@ targets:
       ENABLE_PREVIEWS: NO
       MARKETING_VERSION: ${MARKETING_VERSION}
       CURRENT_PROJECT_VERSION: ${CURRENT_PROJECT_VERSION}
-    preBuildScripts:
-      - name: Increment Build Number
-        script: |
-          sh "$SRCROOT/scripts/increment_version.sh"
-        runOnlyWhenInstalling: false
+    preBuildScripts: []
     postBuildScripts:
       - name: Apply Build Number
         script: |
           sh "$SRCROOT/scripts/apply_version.sh"
         runOnlyWhenInstalling: false
+        basedOnDependencyAnalysis: false
     dependencies:
       - target: MarkdownPreview
         embed: true
@@ -52,11 +50,18 @@ targets:
       SKIP_INSTALL: YES
       MARKETING_VERSION: ${MARKETING_VERSION}
       CURRENT_PROJECT_VERSION: ${CURRENT_PROJECT_VERSION}
+    preBuildScripts:
+      - name: Increment Build Number
+        script: |
+          sh "$SRCROOT/scripts/increment_version.sh"
+        runOnlyWhenInstalling: false
+        basedOnDependencyAnalysis: false
     postBuildScripts:
       - name: Apply Build Number
         script: |
           sh "$SRCROOT/scripts/apply_version.sh"
         runOnlyWhenInstalling: false
+        basedOnDependencyAnalysis: false
     dependencies:
       - sdk: QuickLookUI.framework
 
