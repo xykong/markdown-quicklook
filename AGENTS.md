@@ -14,7 +14,7 @@ macOS QuickLook extension for Markdown files. Hybrid architecture: Native Swift 
 ├── Sources/
 │   ├── Markdown/       # Host App (SwiftUI) - Container for extension
 │   └── MarkdownPreview/# Extension (AppKit) - WKWebView, QLPreviewingController
-├── web-renderer/       # Rendering Engine (TypeScript/Webpack) -> See web-renderer/AGENTS.md
+├── web-renderer/       # Rendering Engine (TypeScript/Vite) -> See web-renderer/AGENTS.md
 └── scripts/            # Versioning and packaging scripts
 ```
 
