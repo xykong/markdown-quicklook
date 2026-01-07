@@ -110,6 +110,12 @@ declare global {
 // Render function called by Swift
 window.renderMarkdown = async function (text: string, options: { baseUrl?: string, theme?: string } = {}) {
     const outputDiv = document.getElementById('markdown-preview');
+    const loadingDiv = document.getElementById('loading-status');
+    
+    if (loadingDiv) {
+        loadingDiv.style.display = 'none';
+    }
+    
     if (!outputDiv) {
         logToSwift("JS Error: markdown-preview element not found");
         return;
@@ -165,5 +171,14 @@ window.renderMarkdown = async function (text: string, options: { baseUrl?: strin
         
     } catch (e) {
         logToSwift("JS Error during render: " + e);
+        if (outputDiv) {
+            outputDiv.innerHTML = `<div style="color: red; padding: 20px; border: 1px solid red; border-radius: 5px;">
+                <h3>Rendering Error</h3>
+                <pre>${e}</pre>
+            </div>`;
+        }
     }
 };
+
+// Notify Swift that the renderer is ready
+logToSwift("rendererReady");

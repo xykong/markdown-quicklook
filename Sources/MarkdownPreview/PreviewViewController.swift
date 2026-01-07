@@ -109,14 +109,15 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
             webView.loadHTMLString("<html><body style='background: #ffeeee; font-family: system-ui;'><div style='text-align: center; margin-top: 20%;'><h1 style='color:red'>Error</h1><p>Could not load index.html from bundle.</p><p>Resource Path: \(resourcePath)</p></div></body></html>", baseURL: nil)
         }
         
-        // Debug timeout check
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-            os_log("🔵 2s Check - isLoading: %{public}@", log: self.logger, type: .debug, self.webView.isLoading ? "true" : "false")
-            if !self.isWebViewLoaded && !self.webView.isLoading {
-                os_log("🔴 WebView stuck: not loaded and not loading. Attempting to force load state.", log: self.logger, type: .error)
-                // Assume loaded if it's not loading anymore (maybe delegate missed?)
-                self.isWebViewLoaded = true
-                self.renderPendingMarkdown()
+        // Debug timeout check for handshake
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) { [weak self] in
+            guard let self = self else { return }
+            os_log("🔵 5s Check - isWebViewLoaded: %{public}@", log: self.logger, type: .debug, self.isWebViewLoaded ? "true" : "false")
+            if !self.isWebViewLoaded {
+                os_log("🔴 Renderer Handshake Timeout! Showing error.", log: self.logger, type: .error)
+                // Force load state to allow retry or at least show failure
+                // We could inject an error message into the webview here if we wanted
+                self.webView.evaluateJavaScript("document.body.innerHTML = '<div style=\"padding: 20px; color: red\">Renderer timed out. Please check console logs.</div>'") { _, _ in }
             }
         }
 
@@ -205,6 +206,12 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
     private func renderPendingMarkdown() {
         guard let content = pendingMarkdown else { return }
         
+        // Only render if we have completed the handshake
+        guard isWebViewLoaded else {
+            os_log("🟡 renderPendingMarkdown called but WebView not ready (handshake pending), queuing...", log: logger, type: .debug)
+            return
+        }
+        
         os_log("🔵 renderPendingMarkdown called with content length: %d", log: logger, type: .debug, content.count)
         
         guard let contentData = try? JSONSerialization.data(withJSONObject: [content], options: []),
@@ -214,8 +221,6 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
         }
         
         let safeContentArg = String(contentJsonArray.dropFirst().dropLast())
-        
-        let checkJs = "typeof window.renderMarkdown"
         
         var options: [String: String] = [:]
         
@@ -239,33 +244,21 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
             return
         }
         
-        webView.evaluateJavaScript(checkJs) { (result, error) in
-            if let type = result as? String, type == "function" {
-                os_log("🟢 renderMarkdown is ready", log: self.logger, type: .debug)
-                
-                let callJs = """
-                try {
-                    window.renderMarkdown(\(safeContentArg), \(optionsJson));
-                    "success"
-                } catch(e) {
-                    "error: " + e.toString()
-                }
-                """
-                
-                self.webView.evaluateJavaScript(callJs) { (innerResult, innerError) in
-                    if let innerError = innerError {
-                        os_log("🔴 JS Execution Error: %{public}@", log: self.logger, type: .error, innerError.localizedDescription)
-                    } else if let res = innerResult as? String {
-                        os_log("🔵 JS Execution Result: %{public}@", log: self.logger, type: .debug, res)
-                    }
-                }
-                
-            } else {
-                os_log("🟡 renderMarkdown not ready (type: %{public}@), retrying in 0.2s...", log: self.logger, type: .debug, String(describing: result))
-                
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                    self.renderPendingMarkdown()
-                }
+        // Directly call renderMarkdown since we know it exists (handshake complete)
+        let callJs = """
+        try {
+            window.renderMarkdown(\(safeContentArg), \(optionsJson));
+            "success"
+        } catch(e) {
+            "error: " + e.toString()
+        }
+        """
+        
+        self.webView.evaluateJavaScript(callJs) { (innerResult, innerError) in
+            if let innerError = innerError {
+                os_log("🔴 JS Execution Error: %{public}@", log: self.logger, type: .error, innerError.localizedDescription)
+            } else if let res = innerResult as? String {
+                os_log("🔵 JS Execution Result: %{public}@", log: self.logger, type: .debug, res)
             }
         }
     }
@@ -273,9 +266,7 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
     // MARK: - WKNavigationDelegate
     
     public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        os_log("🔵 WebView didFinish navigation", log: logger, type: .debug)
-        isWebViewLoaded = true
-        renderPendingMarkdown()
+        os_log("🔵 WebView didFinish navigation (waiting for handshake)", log: logger, type: .debug)
     }
     
     public func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
@@ -296,6 +287,15 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
     public func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         if message.name == "logger", let body = message.body as? String {
             os_log("🟢 JS Log: %{public}@", log: logger, type: .debug, body)
+            
+            // Check for Handshake
+            if body == "rendererReady" {
+                os_log("🟢 Renderer Handshake Received!", log: logger, type: .default)
+                if !isWebViewLoaded {
+                    isWebViewLoaded = true
+                    renderPendingMarkdown()
+                }
+            }
         }
     }
 }

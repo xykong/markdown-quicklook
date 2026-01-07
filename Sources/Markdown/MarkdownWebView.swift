@@ -81,19 +81,21 @@ struct MarkdownWebView: NSViewRepresentable {
 
     class Coordinator: NSObject, WKNavigationDelegate, WKScriptMessageHandler {
         let logger = OSLog(subsystem: "com.markdownquicklook.app", category: "MarkdownWebView")
+        var isWebViewLoaded = false
+        var pendingRender: (() -> Void)?
         
         func render(webView: WKWebView, content: String, fileURL: URL?) {
-            let checkJs = "typeof window.renderMarkdown"
-            webView.evaluateJavaScript(checkJs) { [weak self] result, error in
-                guard let self = self else { return }
-                
-                if let type = result as? String, type == "function" {
-                    self.executeRender(webView: webView, content: content, fileURL: fileURL)
-                } else {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                        self.render(webView: webView, content: content, fileURL: fileURL)
-                    }
-                }
+            // Save the render action
+            pendingRender = { [weak self] in
+                self?.executeRender(webView: webView, content: content, fileURL: fileURL)
+            }
+            
+            // If already loaded, render immediately
+            if isWebViewLoaded {
+                pendingRender?()
+                pendingRender = nil
+            } else {
+                os_log("Coordinator: WebView not ready, queuing render", log: logger, type: .debug)
             }
         }
         
@@ -162,6 +164,15 @@ struct MarkdownWebView: NSViewRepresentable {
         func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
             if message.name == "logger", let body = message.body as? String {
                 os_log("JS Log: %{public}@", log: logger, type: .debug, body)
+                
+                if body == "rendererReady" {
+                    os_log("Coordinator: Renderer Handshake Received!", log: logger, type: .default)
+                    if !isWebViewLoaded {
+                        isWebViewLoaded = true
+                        pendingRender?()
+                        pendingRender = nil
+                    }
+                }
             }
         }
         
