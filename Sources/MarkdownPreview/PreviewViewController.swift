@@ -15,9 +15,9 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
     private var handshakeWorkItem: DispatchWorkItem?
     private let handshakeTimeoutInterval: TimeInterval = 10.0
     
-    // Create a custom log object for easy filtering in Console.app
-    // Subsystem: com.markdownquicklook.app
-    // Category: MarkdownPreview
+    private var saveSizeWorkItem: DispatchWorkItem?
+    private var currentSize: CGSize?
+    
     private let logger = OSLog(subsystem: "com.markdownquicklook.app", category: "MarkdownPreview")
     
     private let maxPreviewSizeBytes: UInt64 = 500 * 1024 // 500KB limit
@@ -48,7 +48,12 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
         self.view = NSView(frame: NSRect(x: 0, y: 0, width: width, height: height))
         self.view.autoresizingMask = [.width, .height]
         
-        self.preferredContentSize = NSSize(width: width, height: height)
+        if let savedSize = AppearancePreference.shared.quickLookSize {
+             os_log("🔵 Restoring saved size: %.0f x %.0f", log: logger, type: .debug, savedSize.width, savedSize.height)
+             self.preferredContentSize = NSSize(width: savedSize.width, height: savedSize.height)
+        } else {
+             self.preferredContentSize = NSSize(width: width, height: height)
+        }
     }
 
     public override func viewDidLoad() {
@@ -56,7 +61,6 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
         
         os_log("🔵 viewDidLoad called", log: logger, type: .default)
         
-        // Simple light background
         self.view.wantsLayer = true
         self.view.layer?.backgroundColor = NSColor.white.cgColor
         
@@ -64,7 +68,6 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
         
         os_log("🔵 configuring WebView...", log: logger, type: .default)
         
-        // Initialize WebView
         let webConfiguration = WKWebViewConfiguration()
         webConfiguration.setURLSchemeHandler(LocalSchemeHandler(), forURLScheme: "local-resource")
         
@@ -82,9 +85,7 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
         
         setupThemeButton()
         
-        // Load the HTML template from the bundle
         var bundleURL: URL?
-        // Try finding in WebRenderer folder (most likely for folder reference)
         if let url = Bundle(for: type(of: self)).url(forResource: "index", withExtension: "html", subdirectory: "WebRenderer") {
             bundleURL = url
         } else if let url = Bundle(for: type(of: self)).url(forResource: "index", withExtension: "html", subdirectory: "dist") {
@@ -103,6 +104,29 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
         #if DEBUG
         setupDebugLabel()
         #endif
+    }
+    
+    public override func viewDidLayout() {
+        super.viewDidLayout()
+        
+        let size = self.view.frame.size
+        guard size.width > 200 && size.height > 200 else { return }
+        
+        self.currentSize = size
+        
+        saveSizeWorkItem?.cancel()
+        let item = DispatchWorkItem(block: {
+            AppearancePreference.shared.quickLookSize = size
+        })
+        saveSizeWorkItem = item
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: item)
+    }
+    
+    public override func viewWillDisappear() {
+        super.viewWillDisappear()
+        if let size = self.currentSize {
+            AppearancePreference.shared.quickLookSize = size
+        }
     }
     
     private func setupThemeButton() {
@@ -187,6 +211,11 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
         self.currentURL = url
         
         DispatchQueue.main.async {
+            if let savedSize = AppearancePreference.shared.quickLookSize {
+                os_log("🔵 Re-applying saved size: %.0f x %.0f", log: self.logger, type: .debug, savedSize.width, savedSize.height)
+                self.preferredContentSize = NSSize(width: savedSize.width, height: savedSize.height)
+            }
+            
             AppearancePreference.shared.apply(to: self.view)
             self.updateThemeButtonState()
             
@@ -280,8 +309,6 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
         }
     }
     
-    // MARK: - WKNavigationDelegate
-    
     public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         os_log("🔵 WebView didFinish navigation (waiting for handshake)", log: logger, type: .debug)
         startHandshakeTimeout()
@@ -303,8 +330,6 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
         webView.reload()
     }
     
-    // MARK: - WKScriptMessageHandler
-    
     public func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         if message.name == "logger", let body = message.body as? String {
             os_log("🟢 JS Log: %{public}@", log: logger, type: .debug, body)
@@ -320,8 +345,6 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
             }
         }
     }
-    
-    // MARK: - Handshake Timeout Management
     
     private func startHandshakeTimeout() {
         cancelHandshakeTimeout()
@@ -373,5 +396,6 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
     
     deinit {
         handshakeWorkItem?.cancel()
+        saveSizeWorkItem?.cancel()
     }
 }

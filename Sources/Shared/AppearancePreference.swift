@@ -31,6 +31,7 @@ public class AppearancePreference: ObservableObject {
     
     // Key for UserDefaults
     private let key = "preferredAppearanceMode"
+    private let quickLookSizeKey = "quickLookWindowSize"
     
     // The App Group Identifier
     // IMPORTANT: You must enable "App Groups" in Xcode Signing & Capabilities for BOTH targets
@@ -46,6 +47,29 @@ public class AppearancePreference: ObservableObject {
         set {
             objectWillChange.send()
             store.set(newValue.rawValue, forKey: key)
+        }
+    }
+    
+    public var quickLookSize: CGSize? {
+        get {
+            guard let dict = store.dictionary(forKey: quickLookSizeKey) else { return nil }
+            
+            let w = dict["w"] as? Double ?? 0
+            let h = dict["h"] as? Double ?? 0
+            
+            if w > 0 && h > 0 {
+                return CGSize(width: w, height: h)
+            }
+            return nil
+        }
+        set {
+            if let v = newValue {
+                store.set(["w": Double(v.width), "h": Double(v.height)], forKey: quickLookSizeKey)
+            } else {
+                store.removeObject(forKey: quickLookSizeKey)
+            }
+            // Force sync to disk immediately to ensure persistence across process restarts
+            store.synchronize()
         }
     }
     
