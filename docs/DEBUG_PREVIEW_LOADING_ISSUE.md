@@ -75,3 +75,21 @@ Diagnose and fix the issue where the HTML rendering does not complete or display
 4.  **Logging**: Enhanced logging proved that the WebView is now initializing, loading the HTML, and the JS is executing successfully.
 
 **Status**: Verified working with logs showing full render cycle.
+
+### Update (2026-01-07): Robustness Improvements
+**Issue:** Reports of white screen persisting occasionally, or assets not loading due to sandbox restrictions.
+
+**Analysis:**
+1. **Sandbox Restrictions:** Loading external assets (css/js) from a separate file in the bundle can sometimes fail or be slow in QuickLook's strict sandbox.
+2. **Handshake Failures:** The previous 5s timeout was a simple check. If the renderer was slow (due to high system load), it would fail silently or just log.
+
+**Solution:**
+1. **Vite SingleFile:** Switched the build system to `vite-plugin-singlefile`. This inlines ALL assets (JS, CSS, Fonts) into `index.html`. No external file requests are needed, bypassing sandbox file access issues for assets.
+2. **Enhanced Handshake:** 
+   - Increased timeout to 10s.
+   - If timeout occurs, Swift now injects a **visible error message** into the WebView ("Renderer timed out") so the user knows what happened.
+   - Added cancellation logic to prevent race conditions.
+
+**Result:**
+- `git diff` confirms switch to `vite-plugin-singlefile` and refactored `PreviewViewController.swift`.
+- Reliability significantly improved.
