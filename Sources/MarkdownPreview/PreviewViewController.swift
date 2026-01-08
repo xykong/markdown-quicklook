@@ -18,6 +18,8 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
     private var saveSizeWorkItem: DispatchWorkItem?
     private var currentSize: CGSize?
     
+    private var isResizeTrackingEnabled = false
+    
     private let logger = OSLog(subsystem: "com.markdownquicklook.app", category: "MarkdownPreview")
     
     private let maxPreviewSizeBytes: UInt64 = 500 * 1024 // 500KB limit
@@ -104,10 +106,16 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
         #if DEBUG
         setupDebugLabel()
         #endif
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+            self?.isResizeTrackingEnabled = true
+        }
     }
     
     public override func viewDidLayout() {
         super.viewDidLayout()
+        
+        guard isResizeTrackingEnabled else { return }
         
         let size = self.view.frame.size
         guard size.width > 200 && size.height > 200 else { return }
@@ -124,10 +132,12 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
     
     public override func viewWillDisappear() {
         super.viewWillDisappear()
-        if let size = self.currentSize {
+        if isResizeTrackingEnabled, let size = self.currentSize {
             AppearancePreference.shared.quickLookSize = size
         }
     }
+    
+
     
     private func setupThemeButton() {
         let button = NSButton()
