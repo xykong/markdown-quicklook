@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 ### Changed
+- **Renderer**: Removed maximum width constraint (was 980px) to allow the preview content to fill the entire window width.
 - **Build System**: Optimized build logs for `make install`, `make app`, and `make generate`. Now uses minimal output mode (warnings & errors only) to reduce terminal noise.
 - **Appearance**: Changed default appearance mode to **Light** (previously followed system settings).
 - **Appearance Sync**: Implemented "Perfect Dark Mode Sync" to eliminate white flashes and code block theme mismatches.
