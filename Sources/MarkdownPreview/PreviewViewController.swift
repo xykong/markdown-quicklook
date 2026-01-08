@@ -16,6 +16,7 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
     private let handshakeTimeoutInterval: TimeInterval = 10.0
     
     private var saveSizeWorkItem: DispatchWorkItem?
+    private var resizeTrackingWorkItem: DispatchWorkItem?
     private var currentSize: CGSize?
     
     private var isResizeTrackingEnabled = false
@@ -107,9 +108,7 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
         setupDebugLabel()
         #endif
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
-            self?.isResizeTrackingEnabled = true
-        }
+        startResizeTracking()
     }
     
     public override func viewDidLayout() {
@@ -221,6 +220,11 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
         self.currentURL = url
         
         DispatchQueue.main.async {
+            // Reset tracking to prevent capturing layout thrashing during display switching.
+            // This is necessary because when QuickLook switches displays or reuses the view controller,
+            // transient layout passes with incorrect sizes may occur.
+            self.startResizeTracking()
+            
             if let savedSize = AppearancePreference.shared.quickLookSize {
                 os_log("🔵 Re-applying saved size: %.0f x %.0f", log: self.logger, type: .debug, savedSize.width, savedSize.height)
                 self.preferredContentSize = NSSize(width: savedSize.width, height: savedSize.height)
@@ -404,8 +408,22 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
         }
     }
     
+    private func startResizeTracking() {
+        resizeTrackingWorkItem?.cancel()
+        isResizeTrackingEnabled = false
+        
+        let item = DispatchWorkItem { [weak self] in
+            self?.isResizeTrackingEnabled = true
+            os_log("🔵 Resize tracking enabled", log: self?.logger ?? .default, type: .debug)
+        }
+        
+        resizeTrackingWorkItem = item
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: item)
+    }
+    
     deinit {
         handshakeWorkItem?.cancel()
         saveSizeWorkItem?.cancel()
+        resizeTrackingWorkItem?.cancel()
     }
 }
