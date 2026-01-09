@@ -387,7 +387,10 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
     }
     
     private func renderPendingMarkdown() {
-        guard let content = pendingMarkdown else { return }
+        guard let content = pendingMarkdown else {
+            os_log("🟡 renderPendingMarkdown called but pendingMarkdown is nil", log: logger, type: .debug)
+            return
+        }
         
         guard isWebViewLoaded else {
             os_log("🟡 renderPendingMarkdown called but WebView not ready (handshake pending), queuing...", log: logger, type: .debug)
@@ -446,7 +449,17 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
     
     public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         os_log("🔵 WebView didFinish navigation (waiting for handshake)", log: logger, type: .debug)
+        // Always reset isWebViewLoaded on navigation finish.
+        // This handles browser-initiated reloads (e.g., right-click > Reload)
+        // where didStartProvisionalNavigation may not be called.
+        isWebViewLoaded = false
         startHandshakeTimeout()
+    }
+
+    public func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+        os_log("🔵 WebView didStartProvisionalNavigation (resetting state)", log: logger, type: .debug)
+        isWebViewLoaded = false
+        cancelHandshakeTimeout()
     }
     
     public func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
@@ -473,10 +486,12 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
                 os_log("🟢 Renderer Handshake Received!", log: logger, type: .default)
                 cancelHandshakeTimeout()
                 
-                if !isWebViewLoaded {
-                    isWebViewLoaded = true
-                    renderPendingMarkdown()
-                }
+                // Always mark as loaded and render. 
+                // We do NOT check !isWebViewLoaded here because a Reload action
+                // might have reset the WebView content (sending a new handshake)
+                // without the Swift side catching the navigation start event in time.
+                isWebViewLoaded = true
+                renderPendingMarkdown()
             }
         }
     }

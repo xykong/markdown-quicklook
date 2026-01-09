@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed
+- **QuickLook**: 修复在预览界面右键点击 **Reload** 后卡在 "Loading renderer..." 且不会重新渲染的问题。
+
 ## [1.1.65] - 2026-01-09
 
 ### Added
