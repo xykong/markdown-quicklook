@@ -2,6 +2,19 @@
 
 ## [Unreleased]
 
+### Added
+- **预览 (Preview)**: 自动生成文档目录（Table of Contents）。
+  - 自动从 Markdown 文档提取标题结构，无需手动添加 `[toc]` 标记。
+  - 浮动式可折叠目录面板，支持 H1-H6 层级展示。
+  - 智能导航：点击目录项平滑滚动到对应章节，自动高亮当前阅读位置。
+  - 响应式设计：窗口宽度小于 1200px 时自动隐藏。
+  - 完整的亮色/暗色主题支持，与系统主题同步。
+- **预览 (Preview)**: 支持链接导航。
+  - 支持锚点链接（`#id`）平滑滚动定位。
+  - 外部链接（http/https）使用系统默认浏览器打开。
+  - 本地 `.md` 文件链接通过 `NSWorkspace` 打开。
+  - 引入 `markdown-it-anchor` 为标题生成稳定的 ID。
+
 ### Fixed
 - **QuickLook**: 修复在预览界面右键点击 **Reload** 后卡在 "Loading renderer..." 且不会重新渲染的问题。
 

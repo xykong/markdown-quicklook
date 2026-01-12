@@ -35,6 +35,7 @@ logToSwift("JS: index.ts loaded, starting execution...");
 import 'github-markdown-css/github-markdown.css';
 import './styles/highlight-adaptive.css';
 import 'katex/dist/katex.min.css';
+import './styles/table-of-contents.css';
 
 import MarkdownIt from 'markdown-it';
 import hljs from 'highlight.js';
@@ -56,6 +57,9 @@ import sub from 'markdown-it-sub';
 import sup from 'markdown-it-sup';
 // @ts-ignore
 import anchor from 'markdown-it-anchor';
+
+import { extractOutline } from './outline';
+import { TableOfContents } from './table-of-contents';
 
 // Configure MarkdownIt
 let md: MarkdownIt;
@@ -118,7 +122,8 @@ try {
     logToSwift("JS: MarkdownIt init failed: " + e);
 }
 
-// Define global interface for window
+let toc: TableOfContents | null = null;
+
 declare global {
     interface Window {
         renderMarkdown: (text: string, options?: { baseUrl?: string, theme?: string }) => Promise<void>;
@@ -149,7 +154,19 @@ window.renderMarkdown = async function (text: string, options: { baseUrl?: strin
     const mermaidTheme = currentTheme === 'dark' ? 'dark' : 'default';
 
     try {
-        // 1. Render Markdown to HTML
+        if (!toc) {
+            try {
+                toc = new TableOfContents('toc-container');
+            } catch (e) {
+                logToSwift("JS Warning: TOC initialization failed: " + e);
+            }
+        }
+
+        const outline = extractOutline(md, text);
+        if (toc) {
+            toc.render(outline);
+        }
+
         let html = md.render(text, { baseUrl: options.baseUrl });
 
         // 2. Render Mermaid diagrams
