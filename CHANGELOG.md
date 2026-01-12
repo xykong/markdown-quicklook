@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [1.2.69] - 2026-01-12
+
 ### Added
 - **预览 (Preview)**: 自动生成文档目录（Table of Contents）。
   - 自动从 Markdown 文档提取标题结构，无需手动添加 `[toc]` 标记。
