@@ -27,6 +27,7 @@ macOS QuickLook extension for Markdown files. Hybrid architecture: Native Swift 
 | **Host UI** | `Sources/Markdown/MarkdownApp.swift` | Minimal SwiftUI container. |
 | **Rendering** | `web-renderer/src/index.ts` | Markdown parsing (see subdir AGENTS.md). |
 | **Rules** | `.clinerules` | TDD & Doc-first requirements. |
+| **Release Process** | `docs/RELEASE_PROCESS.md` | Complete PR handling and release workflow. |
 | **Homebrew Cask** | `../homebrew-tap/Casks/markdown-preview-enhanced.rb` | Update version & SHA256 after each release. |
 
 ## ARCHITECTURE & PATTERNS
@@ -34,8 +35,12 @@ macOS QuickLook extension for Markdown files. Hybrid architecture: Native Swift 
 - **Ephemeral Project**: `.xcodeproj` is ignored. Always use `xcodegen` (`make generate`).
 - **Versioning**: `.version` file stores base version (e.g., `1.2`). Full version = `{base}.{git_commit_count}`.
 - **Sandbox**: App Sandbox enabled. Read-only access to files.
-- **Release Flow**: `make release [major|minor|patch]` → Updates `.version`, `CHANGELOG.md`, builds DMG, creates GitHub release.
-- **Homebrew Distribution**: After release, manually update `../homebrew-tap/Casks/markdown-preview-enhanced.rb` with new version & SHA256.
+- **Release Flow**: 
+  1. **PR Merged**: Run `./scripts/analyze-pr.sh <PR_NUMBER>` to generate CHANGELOG entry, add to `[Unreleased]` section.
+  2. **Release**: Run `make release [major|minor|patch]` → Updates `.version`, `CHANGELOG.md`, builds DMG, creates GitHub release.
+  3. **Homebrew**: Run `./scripts/update-homebrew-cask.sh <VERSION>` to update Homebrew Cask automatically.
+  4. See `docs/RELEASE_PROCESS.md` for complete workflow.
+- **Homebrew Distribution**: After release, run `./scripts/update-homebrew-cask.sh <VERSION>` or manually update `../homebrew-tap/Casks/markdown-preview-enhanced.rb`.
 
 ## CONVENTIONS
 - **TDD**: Write tests/metrics *before* implementation (see `.clinerules`).
@@ -49,9 +54,12 @@ macOS QuickLook extension for Markdown files. Hybrid architecture: Native Swift 
 
 ## COMMANDS
 ```bash
-make generate       # Generate Xcode project from project.yml
-make build_renderer # Build TypeScript engine (npm install && build)
-make app            # Build macOS app
-./install.sh        # Build & install locally (clears QL cache)
-./debug-extension.sh# Stream logs
+make generate                    # Generate Xcode project from project.yml
+make build_renderer              # Build TypeScript engine (npm install && build)
+make app                         # Build macOS app
+make release [major|minor|patch] # Release new version
+./install.sh                     # Build & install locally (clears QL cache)
+./debug-extension.sh             # Stream logs
+./scripts/analyze-pr.sh <PR_NUM> # Analyze PR and generate CHANGELOG entry
+./scripts/update-homebrew-cask.sh <VERSION> # Update Homebrew Cask
 ```
