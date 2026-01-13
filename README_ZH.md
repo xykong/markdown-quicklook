@@ -40,27 +40,22 @@ brew install --cask markdown-preview-enhanced
 git clone https://github.com/xykong/markdown-quicklook.git
 cd markdown-quicklook
 
-# 构建并安装
+# 构建并安装 (Release 版本)
 make install
+
+# 或安装 Debug 版本用于开发
+make install debug
 ```
 
-这将执行以下操作：
+这将自动执行以下操作：
 1. 构建包含所有依赖的应用程序
 2. 将其安装到 `/Applications/Markdown Preview Enhanced.app`
 3. 向系统注册应用
-4. 重置 QuickLook 缓存
+4. 启动应用完成注册
+5. 设置为 `.md` 文件的默认处理程序
+6. 重置 QuickLook 缓存
 
-### ⚠️ 关键激活步骤
-
-**必须完成此步骤，QuickLook 扩展才能正常工作：**
-
-1. 在 Finder 中 **右键点击** (或 Control+点击) 任意 `.md` 文件
-2. 选择 **"显示简介" (Get Info)** (或按 `⌘+I`)
-3. 在 **"打开方式 (Open with:)"** 部分，选择 **Markdown Preview Enhanced.app**
-4. 点击 **"全部更改... (Change All...)"** 按钮
-5. 点击 **"继续"** 确认
-
-这将把 Markdown Preview Enhanced 设置为所有 `.md` 文件的默认应用程序，这是 macOS 使用 QuickLook 扩展的**必要条件**。
+**安装现已完全自动化！** 安装后扩展将立即可用。
 
 ### 🛑 常见问题："应用已损坏" 或 "无法验证开发者"
 

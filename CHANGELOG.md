@@ -2,6 +2,23 @@
 
 ## [Unreleased]
 
+### Added
+- **安装 (Installation)**: 实现完全自动化的安装过程。
+  - `install.sh` 脚本现在自动设置应用为 `.md` 文件的默认处理程序。
+  - 自动移除隔离属性 (`xattr -cr`)。
+  - 自动启动应用完成 QuickLook 扩展注册。
+  - 支持 `make install debug` 命令安装调试版本。
+  - 使用 `duti`（如果可用）或 LaunchServices API 设置文件关联。
+- **构建 (Build)**: 改进 `Makefile` 构建流程。
+  - 添加 `install`, `dmg`, `release`, `delete-release` 伪目标。
+  - 增强 `app` 目标，添加构建日志和指定 arm64 架构。
+  - 支持自动检测和构建调试/发布配置。
+
+### Changed
+- **文档 (Documentation)**: 更新安装说明，移除需要用户手动设置默认应用的步骤。
+  - 强调安装过程已完全自动化。
+  - 添加 `make install debug` 命令说明。
+
 ## [1.3.73] - 2026-01-13
 
 ### Fixed

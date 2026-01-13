@@ -40,27 +40,22 @@ brew install --cask markdown-preview-enhanced
 git clone https://github.com/xykong/markdown-quicklook.git
 cd markdown-quicklook
 
-# Build and Install
+# Build and Install (Release version)
 make install
+
+# Or install Debug version for development
+make install debug
 ```
 
-This command will:
+This command will automatically:
 1. Build the application with all dependencies
 2. Install it to `/Applications/Markdown Preview Enhanced.app`
 3. Register it with the system
-4. Reset QuickLook cache
+4. Launch the app to complete registration
+5. Set as default handler for `.md` files
+6. Reset QuickLook cache
 
-### ⚠️ Critical Activation Step
-
-**The QuickLook extension will NOT work until you complete this step:**
-
-1. **Right-click** (or Control+click) on any `.md` file in Finder
-2. Select **"Get Info"** (or press `⌘+I`)
-3. In the **"Open with:"** section, select **Markdown Preview Enhanced.app**
-4. Click the **"Change All..."** button
-5. Confirm by clicking **"Continue"**
-
-This sets Markdown Preview Enhanced as the default application for all `.md` files, which is **required** for macOS to use our QuickLook extension.
+**The installation is now fully automated!** The extension should work immediately after installation.
 
 ### 🛑 Troubleshooting: "App is damaged" or "Unidentified Developer"
 

@@ -1,4 +1,4 @@
-.PHONY: all build_renderer generate app
+.PHONY: all build_renderer generate app install dmg release delete-release
 
 all: app
 
@@ -19,10 +19,18 @@ generate: build_renderer
 	MARKETING_VERSION=$$full_v CURRENT_PROJECT_VERSION=$$commit_count xcodegen generate --quiet
 
 app: generate
-	xcodebuild -project MarkdownPreviewEnhanced.xcodeproj -scheme Markdown -configuration $(or $(CONFIGURATION),Release) -destination 'platform=macOS' clean build -quiet
+	@echo "🔨 Building application in $(or $(CONFIGURATION),Release) configuration..."
+	xcodebuild -project MarkdownPreviewEnhanced.xcodeproj -scheme Markdown -configuration $(or $(CONFIGURATION),Release) -destination 'platform=macOS,arch=arm64' clean build -quiet
+	@echo "✅ Build completed: $(or $(CONFIGURATION),Release) configuration"
 
 install:
-	./scripts/install.sh
+	@config="Release"; \
+	if echo "$(MAKECMDGOALS)" | grep -q "debug"; then \
+		config="Debug"; \
+	fi; \
+	echo "🚀 Building and installing $$config configuration..."; \
+	$(MAKE) app CONFIGURATION=$$config && \
+	./scripts/install.sh $$config true
 
 dmg:
 	./scripts/create_dmg.sh
