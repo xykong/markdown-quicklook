@@ -33,6 +33,7 @@ public class AppearancePreference: ObservableObject {
     private let key = "preferredAppearanceMode"
     private let quickLookSizeKey = "quickLookWindowSize"
     private let hostWindowFrameKey = "hostWindowFrame"
+    private let zoomLevelKey = "markdownZoomLevel"
     
     // The App Group Identifier
     // IMPORTANT: You must enable "App Groups" in Xcode Signing & Capabilities for BOTH targets
@@ -89,6 +90,17 @@ public class AppearancePreference: ObservableObject {
                 store.removeObject(forKey: quickLookSizeKey)
             }
             // Force sync to disk immediately to ensure persistence across process restarts
+            store.synchronize()
+        }
+    }
+    
+    public var zoomLevel: Double {
+        get {
+            let level = store.double(forKey: zoomLevelKey)
+            return level == 0 ? 1.0 : level
+        }
+        set {
+            store.set(newValue, forKey: zoomLevelKey)
             store.synchronize()
         }
     }

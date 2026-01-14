@@ -20,3 +20,7 @@ build/
 *.perspectivev3
 !default.perspectivev3
 xcuserdata/
+
+# Debug/Development Files
+*.sh
+check-keyboard.html

@@ -7,16 +7,54 @@ import SwiftUI
 // Subclass WKWebView to intercept mouse events and prevent them from bubbling up 
 // to the QuickLook host, which would otherwise trigger "Open with default app".
 class InteractiveWebView: WKWebView {
+    private let logger = OSLog(subsystem: "com.markdownquicklook.app", category: "InteractiveWebView")
+    
     override func mouseDown(with event: NSEvent) {
-        // Call super to ensure text selection and other web interactions still work.
         super.mouseDown(with: event)
-        
-        // In some cases, we might need to ensure the event doesn't propagate further.
-        // However, WKWebView usually handles its own event loop.
+        let result = self.window?.makeFirstResponder(self)
+        os_log("🔵 WebView mouseDown - makeFirstResponder result: %{public}@", 
+               log: logger, type: .debug, 
+               result == true ? "SUCCESS" : "FAILED")
     }
     
     override func acceptsFirstMouse(for event: NSEvent?) -> Bool {
         return true
+    }
+    
+    override var acceptsFirstResponder: Bool {
+        return true
+    }
+    
+    override func becomeFirstResponder() -> Bool {
+        os_log("🔵 WebView becomeFirstResponder called", log: logger, type: .debug)
+        return true
+    }
+    
+    override func keyDown(with event: NSEvent) {
+        os_log("🔵 WebView keyDown: %{public}@", log: logger, type: .debug, event.charactersIgnoringModifiers ?? "nil")
+        super.keyDown(with: event)
+    }
+    
+    override func scrollWheel(with event: NSEvent) {
+        if event.modifierFlags.contains(.command) {
+            os_log("🔵 WebView scrollWheel with CMD modifier", log: logger, type: .debug)
+            
+            let js = """
+            (function() {
+                var currentZoom = parseFloat(document.getElementById('markdown-preview')?.style.transform?.match(/scale\\(([^)]+)\\)/)?.[1] || 1.0);
+                var delta = \(event.scrollingDeltaY);
+                var newZoom = currentZoom + (delta > 0 ? 0.05 : -0.05);
+                newZoom = Math.max(0.5, Math.min(3.0, newZoom));
+                if (window.setZoomLevel) {
+                    window.setZoomLevel(newZoom);
+                }
+            })();
+            """
+            
+            self.evaluateJavaScript(js, completionHandler: nil)
+            return
+        }
+        super.scrollWheel(with: event)
     }
 }
 
@@ -27,6 +65,11 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
     var pendingMarkdown: String?
     var currentURL: URL?
     var isWebViewLoaded = false
+    var currentZoomLevel: Double = 1.0
+    
+    public override var acceptsFirstResponder: Bool {
+        return true
+    }
     
     private var handshakeWorkItem: DispatchWorkItem?
     private let handshakeTimeoutInterval: TimeInterval = 10.0
@@ -157,6 +200,12 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
         
         AppearancePreference.shared.apply(to: self.view)
         
+        NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
+            os_log("🔵 Local event monitor triggered", log: self?.logger ?? .default, type: .debug)
+            return self?.handleKeyDownEvent(event) ?? event
+        }
+        os_log("🔵 Registered local key event monitor", log: logger, type: .default)
+        
         os_log("🔵 configuring WebView...", log: logger, type: .default)
         
         let webConfiguration = WKWebViewConfiguration()
@@ -196,10 +245,16 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
         doubleClickGesture.numberOfClicksRequired = 2
         doubleClickGesture.delaysPrimaryMouseButtonEvents = false
         webView.addGestureRecognizer(doubleClickGesture)
+        
+        DispatchQueue.main.async {
+            self.view.window?.makeFirstResponder(self.webView)
+        }
 
         #if DEBUG
         setupDebugLabel()
         #endif
+        
+        currentZoomLevel = AppearancePreference.shared.zoomLevel
         
         startResizeTracking()
     }
@@ -248,6 +303,12 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
     public override func viewDidAppear() {
         super.viewDidAppear()
         logScreenEnvironment(context: "viewDidAppear")
+        
+        DispatchQueue.main.async { [weak self] in
+            self?.view.window?.makeFirstResponder(self)
+            os_log("🔵 Attempted to make view controller first responder", 
+                   log: self?.logger ?? .default, type: .default)
+        }
     }
     
     public override func viewWillDisappear() {
@@ -321,6 +382,91 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
             themeButton.image = image
             themeButton.contentTintColor = iconColor
         }
+    }
+    
+    @objc private func zoomIn() {
+        currentZoomLevel = min(currentZoomLevel + 0.1, 3.0)
+        applyZoom()
+    }
+    
+    @objc private func zoomOut() {
+        currentZoomLevel = max(currentZoomLevel - 0.1, 0.5)
+        applyZoom()
+    }
+    
+    @objc private func resetZoom() {
+        currentZoomLevel = 1.0
+        applyZoom()
+    }
+    
+    private func applyZoom() {
+        guard isWebViewLoaded else { return }
+        
+        let js = """
+        if (window.setZoomLevel) {
+            window.setZoomLevel(\(currentZoomLevel));
+        }
+        """
+        
+        webView.evaluateJavaScript(js) { [weak self] (_, error) in
+            if let error = error {
+                os_log("🔴 Failed to apply zoom: %{public}@", log: self?.logger ?? .default, type: .error, error.localizedDescription)
+            } else {
+                os_log("🔵 Zoom applied: %.2f", log: self?.logger ?? .default, type: .debug, self?.currentZoomLevel ?? 1.0)
+                AppearancePreference.shared.zoomLevel = self?.currentZoomLevel ?? 1.0
+            }
+        }
+    }
+    
+    private func handleKeyDownEvent(_ event: NSEvent) -> NSEvent? {
+        let flags = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
+        
+        os_log("🔵 handleKeyDownEvent: key=%{public}@ flags=%{public}@", 
+               log: logger, type: .debug, 
+               event.charactersIgnoringModifiers ?? "nil",
+               String(describing: flags))
+        
+        if flags == .command {
+            switch event.charactersIgnoringModifiers {
+            case "+", "=":
+                os_log("🔵 Zoom In triggered", log: logger, type: .default)
+                zoomIn()
+                return nil
+            case "-", "_":
+                os_log("🔵 Zoom Out triggered", log: logger, type: .default)
+                zoomOut()
+                return nil
+            case "0":
+                os_log("🔵 Reset Zoom triggered", log: logger, type: .default)
+                resetZoom()
+                return nil
+            default:
+                break
+            }
+        }
+        
+        return event
+    }
+    
+    public override func performKeyEquivalent(with event: NSEvent) -> Bool {
+        os_log("🔵 performKeyEquivalent called: key=%{public}@ modifiers=%{public}@", 
+               log: logger, type: .debug,
+               event.charactersIgnoringModifiers ?? "nil",
+               String(describing: event.modifierFlags))
+        
+        if handleKeyDownEvent(event) == nil {
+            os_log("🔵 performKeyEquivalent handled the event", log: logger, type: .default)
+            return true
+        }
+        
+        return super.performKeyEquivalent(with: event)
+    }
+    
+    public override func keyDown(with event: NSEvent) {
+        if handleKeyDownEvent(event) == nil {
+            return
+        }
+        super.keyDown(with: event)
     }
     
     #if DEBUG
@@ -469,6 +615,9 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
             } else if let res = innerResult as? String {
                 os_log("🔵 JS Execution Result: %{public}@", log: self.logger, type: .debug, res)
             }
+            
+            // Apply saved zoom level after rendering
+            self.applyZoom()
         }
     }
     

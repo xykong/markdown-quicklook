@@ -127,6 +127,7 @@ let toc: TableOfContents | null = null;
 declare global {
     interface Window {
         renderMarkdown: (text: string, options?: { baseUrl?: string, theme?: string }) => Promise<void>;
+        setZoomLevel: (level: number) => void;
     }
 }
 
@@ -322,5 +323,41 @@ function handleAnchorClick(e: Event) {
 }
 
 document.addEventListener('click', handleAnchorClick, { capture: true, passive: false });
+
+let currentZoomLevel = 1.0;
+
+window.setZoomLevel = function(level: number) {
+    currentZoomLevel = level;
+    const outputDiv = document.getElementById('markdown-preview');
+    if (outputDiv) {
+        outputDiv.style.transform = `scale(${level})`;
+        outputDiv.style.transformOrigin = 'top left';
+        outputDiv.style.width = `${100 / level}%`;
+        logToSwift(`Zoom level set to ${level}`);
+    }
+};
+
+function applyZoomLevel(level: number) {
+    currentZoomLevel = Math.max(0.5, Math.min(3.0, level));
+    window.setZoomLevel(currentZoomLevel);
+}
+
+document.addEventListener('keydown', (e: KeyboardEvent) => {
+    if (e.metaKey || e.ctrlKey) {
+        if (e.key === '+' || e.key === '=') {
+            e.preventDefault();
+            applyZoomLevel(currentZoomLevel + 0.1);
+            logToSwift(`Zoom in: ${currentZoomLevel}`);
+        } else if (e.key === '-' || e.key === '_') {
+            e.preventDefault();
+            applyZoomLevel(currentZoomLevel - 0.1);
+            logToSwift(`Zoom out: ${currentZoomLevel}`);
+        } else if (e.key === '0') {
+            e.preventDefault();
+            applyZoomLevel(1.0);
+            logToSwift(`Zoom reset: ${currentZoomLevel}`);
+        }
+    }
+});
 
 logToSwift("rendererReady");
