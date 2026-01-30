@@ -85,7 +85,7 @@ Then try opening the app again.
 After completing the activation step above, test the extension:
 
 ```bash
-qlmanage -p test-sample.md
+qlmanage -p tests/fixtures/test-sample.md
 ```
 
 Or simply select any `.md` file in Finder and press Space (QuickLook shortcut).

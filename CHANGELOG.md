@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+### Changed
+- **项目结构 (Project Structure)**: 重组项目目录结构，提升可维护性。
+  - 将所有文档整理到 `docs/` 目录：`docs/features/`（功能文档）、`docs/testing/`（测试文档）。
+  - 将所有测试文件整理到 `tests/` 目录：`tests/fixtures/`（测试样本）、`tests/scripts/`（测试脚本）。
+  - 合并相关文档：将 `ZOOM_FEATURE.md`、`ZOOM_STATUS.md`、`QUICK_START_ZOOM.md` 合并为 `docs/features/ZOOM.md`。
+  - 更新所有文件引用路径，确保文档和脚本中的路径正确。
+  - 根目录现在只保留核心项目文件（README、Makefile、配置文件等）。
+
 ### Added
 - **预览 (Preview)**: 实现实时文件监控和自动刷新功能。
   - 使用 `DispatchSource` 监控文件系统事件（写入、删除、重命名）。

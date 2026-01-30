@@ -22,7 +22,12 @@ build/
 xcuserdata/
 
 # Debug/Development Files
-*.sh
-check-keyboard.html
+# Note: Test scripts and fixtures are now in tests/ directory and should be tracked
 .sisyphus/
-test-*.md
+
+# Ignore root-level test files (they've been moved to tests/)
+/debug-*.sh
+/verify-*.sh
+/test-*.sh
+/check-keyboard.html
+/test-*.md

@@ -85,7 +85,7 @@ xattr -cr "/Applications/Markdown Preview Enhanced.app"
 完成上述激活步骤后，测试扩展：
 
 ```bash
-qlmanage -p test-sample.md
+qlmanage -p tests/fixtures/test-sample.md
 ```
 
 或者直接在 Finder 中选中任意 `.md` 文件并按空格键 (QuickLook快捷键)。

@@ -59,7 +59,7 @@ make build_renderer              # Build TypeScript engine (npm install && build
 make app                         # Build macOS app
 make release [major|minor|patch] # Release new version
 ./install.sh                     # Build & install locally (clears QL cache)
-./debug-extension.sh             # Stream logs
+./tests/scripts/debug-extension.sh # Stream logs
 ./scripts/analyze-pr.sh <PR_NUM> # Analyze PR and generate CHANGELOG entry
 ./scripts/update-homebrew-cask.sh <VERSION> # Update Homebrew Cask
 ```
