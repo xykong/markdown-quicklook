@@ -7,6 +7,28 @@
         <language>zh-CN</language>
         
         <item>
+            <title>Version 1.6.102</title>
+            <link>https://github.com/xykong/markdown-quicklook/releases/tag/v1.6.102</link>
+            <sparkle:version>102</sparkle:version>
+            <sparkle:shortVersionString>1.6.102</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
+            <pubDate>Wed, 04 Feb 2026 02:02:00 +0800</pubDate>
+            <enclosure 
+                url="https://github.com/xykong/markdown-quicklook/releases/download/v1.6.102/MarkdownPreviewEnhanced.dmg"
+                sparkle:edSignature="V7HqjuQrdaDbfUlDUyE1ttgy1cjSbr7w76uj+tSCmKIUZVQsF17FSSJB2obxfMr8LPiNbjhnUxCImurd4H4qDA=="
+                length="7290034"
+                type="application/octet-stream" />
+            <description><![CDATA[
+                <h2>修复 / Fixed</h2>
+                <ul>
+                    <li><strong>自动更新</strong>: 实现密钥迁移支持，允许从旧版本（v1.6.96 及更早）平滑更新</li>
+                    <li>添加 <code>SUPublicEDKeyChain</code> 数组，同时包含新旧两个公钥</li>
+                    <li>旧版本用户现在可以成功验证并安装新版本的更新</li>
+                </ul>
+            ]]></description>
+        </item>
+        
+        <item>
             <title>Version 1.6.100</title>
             <link>https://github.com/xykong/markdown-quicklook/releases/tag/v1.6.100</link>
             <sparkle:version>100</sparkle:version>
