@@ -7,6 +7,28 @@
         <language>zh-CN</language>
         
         <item>
+            <title>Version 1.6.100</title>
+            <link>https://github.com/xykong/markdown-quicklook/releases/tag/v1.6.100</link>
+            <sparkle:version>100</sparkle:version>
+            <sparkle:shortVersionString>1.6.100</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
+            <pubDate>Wed, 04 Feb 2026 01:54:00 +0800</pubDate>
+            <enclosure 
+                url="https://github.com/xykong/markdown-quicklook/releases/download/v1.6.100/MarkdownPreviewEnhanced.dmg"
+                sparkle:edSignature="FODdhq7ltEKzdS5v+zgTlnQD/ti25CTPr/fJjXNU4HfBgmgbbwsXtjkZM2ZhNzXeOTSErR/svWsyerytpdZNAA=="
+                length="7289961"
+                type="application/octet-stream" />
+            <description><![CDATA[
+                <h2>修复 / Fixed</h2>
+                <ul>
+                    <li><strong>自动更新</strong>: 修复签名验证错误 "improperly signed" 的问题</li>
+                    <li>更新公钥以匹配新生成的 EdDSA 密钥对</li>
+                    <li>重新签名所有更新包以确保签名验证通过</li>
+                </ul>
+            ]]></description>
+        </item>
+        
+        <item>
             <title>Version 1.6.99</title>
             <link>https://github.com/xykong/markdown-quicklook/releases/tag/v1.6.99</link>
             <sparkle:version>99</sparkle:version>
