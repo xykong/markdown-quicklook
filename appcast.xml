@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <channel>
+        <title>Markdown Preview Enhanced</title>
+        <link>https://xykong.github.io/markdown-quicklook/appcast.xml</link>
+        <description>Most recent updates to Markdown Preview Enhanced</description>
+        <language>zh-CN</language>
+        
+        <!-- 
+        ==================================================================================
+        TEMPLATE: Add new releases here
+        ==================================================================================
+        
+        <item>
+            <title>Version X.Y.Z</title>
+            <link>https://github.com/xykong/markdown-quicklook/releases/tag/vX.Y.Z</link>
+            <sparkle:version>BUILD_NUMBER</sparkle:version>
+            <sparkle:shortVersionString>X.Y.Z</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
+            <pubDate>Mon, DD MMM YYYY HH:MM:SS +0800</pubDate>
+            <enclosure 
+                url="https://github.com/xykong/markdown-quicklook/releases/download/vX.Y.Z/MarkdownPreviewEnhanced.dmg"
+                sparkle:edSignature="SIGNATURE_PLACEHOLDER"
+                length="FILE_SIZE_IN_BYTES"
+                type="application/octet-stream" />
+            <description><![CDATA[
+                <h2>新增功能 / What's New</h2>
+                <ul>
+                    <li>Feature description</li>
+                </ul>
+                
+                <h2>改进 / Improvements</h2>
+                <ul>
+                    <li>Improvement description</li>
+                </ul>
+                
+                <h2>修复 / Bug Fixes</h2>
+                <ul>
+                    <li>Bug fix description</li>
+                </ul>
+            ]]></description>
+        </item>
+        -->
+        
+    </channel>
+</rss>

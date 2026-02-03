@@ -141,4 +141,37 @@ gh release create "v$FULL_VERSION" "$DMG_PATH" \
 
 rm "$RELEASE_NOTES_FILE"
 
+echo ""
+echo "✨ Updating Sparkle appcast..."
+if [ -f "./scripts/generate-appcast.sh" ] && [ -f ".sparkle-keys/sparkle_private_key.pem" ]; then
+    ./scripts/generate-appcast.sh "$DMG_PATH"
+    
+    if [ -f "appcast.xml" ]; then
+        git add appcast.xml
+        git commit -m "chore(sparkle): update appcast for v$FULL_VERSION" || true
+        git push origin master || true
+        echo "✅ Appcast updated and committed"
+    fi
+else
+    echo "⚠️  Skipping appcast update (missing keys or script)"
+    echo "   Generate keys with: ./scripts/generate-sparkle-keys.sh"
+fi
+
+echo ""
+echo "🍺 Updating Homebrew Cask..."
+if [ -f "./scripts/update-homebrew-cask.sh" ]; then
+    ./scripts/update-homebrew-cask.sh "$FULL_VERSION" || echo "⚠️  Homebrew update failed (non-fatal)"
+else
+    echo "⚠️  Skipping Homebrew update (script not found)"
+fi
+
+echo ""
 echo "🎉 Successfully released v$FULL_VERSION!"
+echo ""
+echo "📋 Post-release checklist:"
+echo "   ✅ GitHub Release created"
+echo "   ✅ DMG uploaded"
+echo "   ✅ Sparkle appcast updated (if configured)"
+echo "   ✅ Homebrew Cask updated (if configured)"
+echo ""
+echo "🌐 Release URL: https://github.com/xykong/markdown-quicklook/releases/tag/v$FULL_VERSION"

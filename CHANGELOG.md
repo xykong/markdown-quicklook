@@ -2,6 +2,16 @@
 
 ## [Unreleased]
 
+### Added
+- **自动更新 (Auto Update)**: 实现混合更新策略，同时支持 Homebrew 和 DMG 安装用户。
+  - **Homebrew 用户**: 每周自动检查 GitHub API，发现新版本时提示运行 `brew upgrade`，一键复制更新命令。
+  - **DMG 用户**: 集成 Sparkle 2.8.1 框架，每天自动检查更新，支持 EdDSA 签名验证，自动下载安装。
+  - **智能检测**: 自动识别安装方式（Homebrew Caskroom vs 手动 DMG），应用对应的更新策略。
+  - **安全验证**: 使用 EdDSA 签名确保更新来源可信，私钥存储在 `.sparkle-keys/`（已加入 `.gitignore`）。
+  - **自动化发布**: `make release` 命令现在自动生成 Sparkle 签名、更新 `appcast.xml`、更新 Homebrew Cask。
+  - **新增脚本**: `generate-sparkle-keys.sh`（密钥生成）、`generate-appcast.sh`（appcast 生成）。
+  - **新增文档**: `docs/AUTO_UPDATE.md` 完整使用指南。
+
 ### Changed
 - **项目结构 (Project Structure)**: 重组项目目录结构，提升可维护性。
   - 将所有文档整理到 `docs/` 目录：`docs/features/`（功能文档）、`docs/testing/`（测试文档）。

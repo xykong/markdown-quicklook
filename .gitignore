@@ -31,3 +31,4 @@ xcuserdata/
 /test-*.sh
 /check-keyboard.html
 /test-*.md
+.sparkle-keys/

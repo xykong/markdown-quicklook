@@ -64,5 +64,15 @@
 			</dict>
 		</dict>
 	</array>
+	<key>SUFeedURL</key>
+	<string>https://xykong.github.io/markdown-quicklook/appcast.xml</string>
+	<key>SUPublicEDKey</key>
+	<string>Y9i8B7zEssv/ZsH0Lg70biYHa9FJ6TMlXhvz/LOecUs=</string>
+	<key>SUEnableAutomaticChecks</key>
+	<true/>
+	<key>SUScheduledCheckInterval</key>
+	<integer>86400</integer>
+	<key>SUAllowsAutomaticUpdates</key>
+	<true/>
 </dict>
 </plist>

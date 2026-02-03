@@ -53,6 +53,19 @@ echo "🔧 Updating Cask file..."
 sed -i '' "s/version '.*'/version '$VERSION'/" "$CASK_FILE"
 sed -i '' "s/sha256 '.*'/sha256 '$SHA256'/" "$CASK_FILE"
 
+if ! grep -q "auto_updates true" "$CASK_FILE"; then
+    echo "🔧 Adding auto_updates configuration..."
+    sed -i '' "/homepage /a\\
+\\
+  auto_updates true\\
+\\
+  livecheck do\\
+    url \"https://xykong.github.io/markdown-quicklook/appcast.xml\"\\
+    strategy :sparkle, \&:short_version\\
+  end
+" "$CASK_FILE"
+fi
+
 echo "✅ Cask file updated successfully"
 echo ""
 

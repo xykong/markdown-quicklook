@@ -3,6 +3,10 @@ options:
   bundleIdPrefix: com.xykong
   deploymentTarget:
     macOS: "11.0"
+packages:
+  Sparkle:
+    url: https://github.com/sparkle-project/Sparkle
+    exactVersion: 2.8.1
 targets:
   Markdown:
     type: application
@@ -26,6 +30,8 @@ targets:
     dependencies:
       - target: MarkdownPreview
         embed: true
+      - package: Sparkle
+        product: Sparkle
 
   MarkdownPreview:
     type: app-extension
