@@ -7,6 +7,28 @@
         <language>zh-CN</language>
         
         <item>
+            <title>Version 1.6.99</title>
+            <link>https://github.com/xykong/markdown-quicklook/releases/tag/v1.6.99</link>
+            <sparkle:version>99</sparkle:version>
+            <sparkle:shortVersionString>1.6.99</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
+            <pubDate>Wed, 04 Feb 2026 01:45:00 +0800</pubDate>
+            <enclosure 
+                url="https://github.com/xykong/markdown-quicklook/releases/download/v1.6.99/MarkdownPreviewEnhanced.dmg"
+                sparkle:edSignature="h048is5CZv6SafC4IbrMdwjEra7N7Ajos8Qi8BfQPFKkfxIPVHcLQwSSvvTZH4ccgQM0IRVcpLMgHVo77rz9Dw=="
+                length="7292396"
+                type="application/octet-stream" />
+            <description><![CDATA[
+                <h2>修复 / Fixed</h2>
+                <ul>
+                    <li><strong>自动更新</strong>: 修复安装新版本时报错 "An error occurred while running the updater" 的问题</li>
+                    <li>使用正确的 Sparkle XPC 服务名称：<code>$(PRODUCT_BUNDLE_IDENTIFIER)-spks</code> 和 <code>$(PRODUCT_BUNDLE_IDENTIFIER)-spki</code></li>
+                    <li>之前使用的服务名 <code>com.xykong.Markdown.Installer</code> 不符合 Sparkle 规范</li>
+                </ul>
+            ]]></description>
+        </item>
+        
+        <item>
             <title>Version 1.6.96</title>
             <link>https://github.com/xykong/markdown-quicklook/releases/tag/v1.6.96</link>
             <sparkle:version>96</sparkle:version>
