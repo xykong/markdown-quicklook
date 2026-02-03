@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [1.5.87] - 2026-02-03
+
 ### Added
 - **自动更新 (Auto Update)**: 实现混合更新策略，同时支持 Homebrew 和 DMG 安装用户。
   - **Homebrew 用户**: 每周自动检查 GitHub API，发现新版本时提示运行 `brew upgrade`，一键复制更新命令。
