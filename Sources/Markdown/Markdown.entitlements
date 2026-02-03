@@ -31,10 +31,11 @@
     <true/>
 
     <!-- Sparkle Installer Support -->
-    <!-- Allow Sparkle installer helper communication -->
+    <!-- Allow Sparkle XPC services communication (required for sandboxed apps) -->
     <key>com.apple.security.temporary-exception.mach-lookup.global-name</key>
     <array>
-        <string>com.xykong.Markdown.Installer</string>
+        <string>$(PRODUCT_BUNDLE_IDENTIFIER)-spks</string>
+        <string>$(PRODUCT_BUNDLE_IDENTIFIER)-spki</string>
     </array>
 
     <!-- Allow Sparkle to write to /Applications for update installation -->
