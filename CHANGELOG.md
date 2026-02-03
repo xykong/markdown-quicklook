@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [1.6.96] - 2026-02-04
+
 ### Fixed
 - **自动更新**: 修复安装新版本时报错 "An error occurred while launching the installer" 的问题。
   - 添加 `com.apple.security.temporary-exception.mach-lookup.global-name` 权限，允许 Sparkle 安装器与主应用通信。
