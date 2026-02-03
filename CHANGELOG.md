@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [1.6.93] - 2026-02-04
+
 ### Fixed
 - **自动更新**: 修复手动检查更新无响应的问题。
   - 使用 `SPUStandardUpdaterController` 替代手动组装 `SPUUpdater` + `SPUStandardUserDriver`，这是 Sparkle 2.x 推荐的 SwiftUI 集成方式。
