@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Fixed
+- **自动更新**: 修复安装新版本时报错 "An error occurred while running the updater" 的问题。
+  - 使用正确的 Sparkle XPC 服务名称：`$(PRODUCT_BUNDLE_IDENTIFIER)-spks` 和 `$(PRODUCT_BUNDLE_IDENTIFIER)-spki`。
+  - 之前使用的服务名 `com.xykong.Markdown.Installer` 不符合 Sparkle 规范，导致更新器无法正常运行。
+
 ## [1.6.96] - 2026-02-04
 
 ### Fixed
