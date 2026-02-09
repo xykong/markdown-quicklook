@@ -80,15 +80,121 @@ xattr -cr "/Applications/Markdown Preview Enhanced.app"
 
 Then try opening the app again.
 
+### 🔐 First-Time Permission Request
+
+**When you first preview a Markdown file with images**, macOS will show a permission dialog:
+
+```
+"Markdown Preview Enhanced.app" would like to 
+access files in your home folder.
+
+Keeping app data separate makes it easier to 
+manage your privacy and security.
+
+[Don't Allow]  [Allow]
+```
+
+**Why is this needed?**
+- Markdown files often reference images using relative paths (e.g., `../images/pic.png`)
+- These images may be outside the current directory
+- macOS sandbox requires explicit permission to access them
+
+**What to do:**
+1. ✅ Click **"Allow"** - Recommended for full functionality
+   - All image types will display correctly (relative paths, absolute paths)
+   - You only need to grant permission once
+   
+2. ❌ Click **"Don't Allow"** - Limited functionality
+   - Images in the same directory and subdirectories will still work
+   - Parent directory images (`../`) and absolute paths may not display
+
+**Security note:** This permission only grants access to **your home folder** (`/Users/username/`), not system files or other users' data.
+
 ### Testing
 
-After completing the activation step above, test the extension:
+After completing the activation and permission steps above, test the extension:
 
 ```bash
 qlmanage -p tests/fixtures/test-sample.md
 ```
 
 Or simply select any `.md` file in Finder and press Space (QuickLook shortcut).
+
+## 🛠️ Troubleshooting
+
+### Permission Dialog Keeps Appearing
+
+**Problem:** The permission dialog shows up every time you preview a Markdown file.
+
+**Solution:**
+1. Make sure you clicked **"Allow"** (not "Don't Allow") in the permission dialog
+2. If you accidentally clicked "Don't Allow", you need to reset the permission:
+   - Open **System Settings** > **Privacy & Security** > **Files and Folders**
+   - Look for "Markdown Preview Enhanced"
+   - Enable access to your home folder
+3. Alternatively, completely reset permissions:
+   ```bash
+   tccutil reset All com.xykong.Markdown
+   ```
+   Then preview a Markdown file again and click "Allow" this time.
+
+### Images Not Displaying
+
+**Problem:** Some or all images in Markdown files don't show up.
+
+**Checklist:**
+
+1. **Check file permissions** - Make sure you clicked "Allow" in the permission dialog
+
+2. **Verify image paths:**
+   - ✅ Same directory: `![](./image.png)` → Should work
+   - ✅ Subdirectory: `![](./images/pic.png)` → Should work
+   - ✅ Parent directory: `![](../images/pic.png)` → Requires "Allow" permission
+   - ✅ Absolute path (home folder): `![](/Users/username/Pictures/pic.png)` → Requires "Allow" permission
+   - ❌ System paths: `![](/System/...)` → Not supported
+   - ❌ Other users: `![](/Users/other-user/...)` → Not supported
+
+3. **Check image file exists:**
+   ```bash
+   # From terminal, check if file exists
+   ls -la /path/to/your/image.png
+   ```
+
+4. **Supported formats:**
+   - ✅ PNG, JPEG, GIF, WebP, SVG
+   - ✅ Network images (HTTPS)
+   - ⚠️ HTTP images (may be blocked by security policy)
+
+### QuickLook Not Working
+
+**Problem:** Pressing Space on a `.md` file doesn't trigger preview.
+
+**Solution:**
+1. Reset QuickLook cache:
+   ```bash
+   qlmanage -r
+   qlmanage -r cache
+   ```
+
+2. Set as default handler manually:
+   - Right-click on a `.md` file → **Get Info**
+   - Under "Open with:", select **Markdown Preview Enhanced**
+   - Click **Change All...**
+
+3. Log out and log back in (or restart your Mac)
+
+### Managing Permissions Manually
+
+**To view current permissions:**
+- **System Settings** > **Privacy & Security** > **Files and Folders**
+- Look for "Markdown Preview Enhanced"
+
+**To revoke permissions:**
+- Toggle off the permission switch
+- Next time you preview a file, you'll be asked again
+
+**To grant permissions without dialog:**
+- You can pre-authorize in System Settings before using the app
 
 ## Acknowledgements
 

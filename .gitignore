@@ -49,3 +49,6 @@ test-base64.html
 
 # OpenCode directory
 .opencode/
+
+# Claude AI configuration
+.claude/

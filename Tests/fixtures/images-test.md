@@ -16,13 +16,16 @@
 ### 1.4 相对路径（显式当前目录）
 ![Test Image - Explicit Current](./images/logo.png)
 
-## 2. 绝对路径图片
+## 2. 绝对路径图片（仅限用户主目录）
 
-### 2.1 file:// 协议
-![Test Image - File Protocol](file:///Users/Shared/test-image.png)
+### 2.1 file:// 协议（用户主目录下）
+![Test Image - File Protocol](file:///Users/xykong/Desktop/test-image.png)
 
-### 2.2 绝对文件系统路径
-![Test Image - Absolute Path](/Users/Shared/test-image.png)
+### 2.2 绝对文件系统路径（用户主目录下）
+![Test Image - Absolute Path](/Users/xykong/Desktop/test-image.png)
+
+### 2.3 超出权限范围的路径（应显示失败）
+![Test Image - Outside Home](/Users/Shared/test-image.png)
 
 ## 3. 网络图片
 

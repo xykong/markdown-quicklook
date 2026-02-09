@@ -14,10 +14,10 @@
     <key>com.apple.security.files.bookmarks.document-scope</key>
     <true/>
     
-    <!-- Temporary exception: allow reading all files (for images in markdown) -->
+    <!-- Temporary exception: allow reading files in user's home directory (for images in markdown) -->
     <key>com.apple.security.temporary-exception.files.absolute-path.read-only</key>
     <array>
-        <string>/</string>
+        <string>$HOME/</string>
     </array>
 
     <!-- Allow debugging in development builds -->
