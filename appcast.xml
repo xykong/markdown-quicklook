@@ -7,6 +7,28 @@
         <language>zh-CN</language>
         
         <item>
+            <title>Version 1.10.127</title>
+            <link>https://github.com/xykong/markdown-quicklook/releases/tag/v1.10.127</link>
+            <sparkle:version>127</sparkle:version>
+            <sparkle:shortVersionString>1.10.127</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
+            <pubDate>Mon, 09 Feb 2026 16:29:41 +0000</pubDate>
+            <enclosure
+                url="https://github.com/xykong/markdown-quicklook/releases/download/v1.10.127/MarkdownPreviewEnhanced.dmg"
+                length="7366532"
+                type="application/octet-stream" />
+            <description><![CDATA[
+                <h2>新增功能 / Added</h2>
+                <ul>
+                    <li><strong>滚动位置记忆</strong>: 自动记录每个 Markdown 文件的滚动位置，下次打开时自动恢复到上次查看的位置</li>
+                    <li>支持记录最近 100 个文件的位置</li>
+                    <li>使用 LRU（最近最少使用）策略自动管理存储</li>
+                    <li>存储位置通过 App Group 在主 App 和 QuickLook 扩展间共享</li>
+                </ul>
+            ]]></description>
+        </item>
+        
+        <item>
             <title>Version 1.10.124</title>
             <link>https://github.com/xykong/markdown-quicklook/releases/tag/v1.10.124</link>
             <sparkle:version>124</sparkle:version>
