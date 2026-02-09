@@ -16,6 +16,7 @@ A macOS QuickLook extension to beautifully preview Markdown files with full rend
 - **Table of Contents**: Auto-generated, collapsible navigation panel with smart highlighting
 - **Theme**: Configurable appearance (Light, Dark, or System). Defaults to Light mode for better readability.
 - **Zoom**: Keyboard shortcuts (`Cmd +/-/0`), scroll wheel zoom (hold `Cmd` and scroll), and pinch gesture (two-finger pinch) with persistence
+- **Scroll Position Memory**: Automatically remembers scroll position for eachMarkdown file and restores it on next preview
 
 ## Quick Start
 

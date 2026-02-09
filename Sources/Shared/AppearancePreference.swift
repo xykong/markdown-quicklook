@@ -34,6 +34,7 @@ public class AppearancePreference: ObservableObject {
     private let quickLookSizeKey = "quickLookWindowSize"
     private let hostWindowFrameKey = "hostWindowFrame"
     private let zoomLevelKey = "markdownZoomLevel"
+    private let scrollPositionsKey = "markdownScrollPositions"
     
     // The App Group Identifier
     // IMPORTANT: You must enable "App Groups" in Xcode Signing & Capabilities for BOTH targets
@@ -114,6 +115,67 @@ public class AppearancePreference: ObservableObject {
         } else {
             self.store = UserDefaults.standard
         }
+    }
+    
+    private let maxScrollPositions = 100
+    
+    private struct ScrollPosition {
+        let path: String
+        let scrollY: Double
+        
+        init(path: String, scrollY: Double) {
+            self.path = path
+            self.scrollY = scrollY
+        }
+        
+        init?(dict: [String: Any]) {
+            guard let path = dict["path"] as? String,
+                  let scrollY = dict["scrollY"] as? Double else {
+                return nil
+            }
+            self.path = path
+            self.scrollY = scrollY
+        }
+        
+        func toDictionary() -> [String: Any] {
+            return ["path": path, "scrollY": scrollY]
+        }
+    }
+    
+    private var scrollPositions: [ScrollPosition] {
+        get {
+            guard let array = store.array(forKey: scrollPositionsKey) as? [[String: Any]] else {
+                return []
+            }
+            return array.compactMap { ScrollPosition(dict: $0) }
+        }
+        set {
+            let array = newValue.map { $0.toDictionary() }
+            store.set(array, forKey: scrollPositionsKey)
+            store.synchronize()
+        }
+    }
+    
+    public func getScrollPosition(for filePath: String) -> Double? {
+        return scrollPositions.first { $0.path == filePath }?.scrollY
+    }
+    
+    public func setScrollPosition(for filePath: String, value: Double) {
+        var positions = scrollPositions
+        
+        positions.removeAll { $0.path == filePath }
+        positions.insert(ScrollPosition(path: filePath, scrollY: value), at: 0)
+        
+        if positions.count > maxScrollPositions {
+            positions = Array(positions.prefix(maxScrollPositions))
+        }
+        
+        scrollPositions = positions
+    }
+    
+    public func clearScrollPositions() {
+        store.removeObject(forKey: scrollPositionsKey)
+        store.synchronize()
     }
     
     // Helper to apply appearance to a view

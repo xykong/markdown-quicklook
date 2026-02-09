@@ -411,6 +411,19 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
             os_log("📊 [viewWillDisappear] Skipping save - no user resize detected or size too small", log: logger, type: .default)
         }
 
+        if let url = currentURL {
+            webView.evaluateJavaScript("window.scrollY || document.documentElement.scrollTop") { result, error in
+                if let scrollY = result as? Double, scrollY >= 0 {
+                    AppearancePreference.shared.setScrollPosition(for: url.path, value: scrollY)
+                    os_log("📊 [viewWillDisappear] Saved scroll position: %.0f for %{public}@", 
+                           log: self.logger, type: .default, scrollY, url.lastPathComponent)
+                } else if let error = error {
+                    os_log("🔴 [viewWillDisappear] Failed to get scroll position: %{public}@",
+                           log: self.logger, type: .error, error.localizedDescription)
+                }
+            }
+        }
+        
         os_log("📊 [viewWillDisappear] Disabling tracking NOW", log: logger, type: .default)
         isResizeTrackingEnabled = false
         didUserResizeSinceOpen = false
@@ -842,8 +855,25 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
                 os_log("🔵 JS Execution Result: %{public}@", log: self.logger, type: .debug, res)
             }
             
-            // Apply saved zoom level after rendering
             self.applyZoom()
+            
+            if let url = self.currentURL,
+               let savedScrollY = AppearancePreference.shared.getScrollPosition(for: url.path),
+               savedScrollY > 0 {
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    let scrollJS = "window.scrollTo({ top: \(savedScrollY), behavior: 'auto' });"
+                    self.webView.evaluateJavaScript(scrollJS) { _, error in
+                        if error == nil {
+                            os_log("📊 [renderPendingMarkdown] Restored scroll position: %.0f for %{public}@",
+                                   log: self.logger, type: .default, savedScrollY, url.lastPathComponent)
+                        } else {
+                            os_log("🔴 [renderPendingMarkdown] Failed to restore scroll position: %{public}@",
+                                   log: self.logger, type: .error, error!.localizedDescription)
+                        }
+                    }
+                }
+            }
         }
     }
     
