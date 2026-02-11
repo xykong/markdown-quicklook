@@ -3,10 +3,16 @@ import AppKit
 import WebKit
 import os.log
 
+enum ViewMode {
+    case preview
+    case source
+}
+
 struct MarkdownWebView: NSViewRepresentable {
     var content: String
     var fileURL: URL?
     var appearanceMode: AppearanceMode = .light
+    var viewMode: ViewMode = .preview
     
     private static let sharedProcessPool = WKProcessPool()
     
@@ -82,7 +88,7 @@ struct MarkdownWebView: NSViewRepresentable {
             webView.appearance = nil
         }
         
-        context.coordinator.render(webView: webView, content: content, fileURL: fileURL)
+        context.coordinator.render(webView: webView, content: content, fileURL: fileURL, viewMode: viewMode, appearanceMode: appearanceMode)
     }
 
     class Coordinator: NSObject, WKNavigationDelegate, WKScriptMessageHandler {
@@ -219,11 +225,11 @@ struct MarkdownWebView: NSViewRepresentable {
             return imageData
         }
         
-        func render(webView: WKWebView, content: String, fileURL: URL?) {
+        func render(webView: WKWebView, content: String, fileURL: URL?, viewMode: ViewMode, appearanceMode: AppearanceMode) {
             currentFileURL = fileURL
             
             pendingRender = { [weak self] in
-                self?.executeRender(webView: webView, content: content, fileURL: fileURL)
+                self?.executeRender(webView: webView, content: content, fileURL: fileURL, viewMode: viewMode, appearanceMode: appearanceMode)
             }
             
             if isWebViewLoaded {
@@ -234,7 +240,7 @@ struct MarkdownWebView: NSViewRepresentable {
             }
         }
         
-        private func executeRender(webView: WKWebView, content: String, fileURL: URL?) {
+        private func executeRender(webView: WKWebView, content: String, fileURL: URL?, viewMode: ViewMode, appearanceMode: AppearanceMode) {
             guard let contentData = try? JSONSerialization.data(withJSONObject: [content], options: []),
                   let contentJsonArray = String(data: contentData, encoding: .utf8) else {
                 os_log("Failed to encode content", log: logger, type: .error)
@@ -268,7 +274,18 @@ struct MarkdownWebView: NSViewRepresentable {
                 return
             }
             
-            let js = "window.renderMarkdown(\(safeContentArg), \(optionsJson));"
+            let js: String
+            if viewMode == .source {
+                var themeStr = "light"
+                if let appearance = appearanceMode.nsAppearance?.name {
+                    if appearance == .darkAqua {
+                        themeStr = "dark"
+                    }
+                }
+                js = "window.renderSource(\(safeContentArg), \"\(themeStr)\");"
+            } else {
+                js = "window.renderMarkdown(\(safeContentArg), \(optionsJson));"
+            }
             
             webView.evaluateJavaScript(js) { [weak self] _, error in
                 if let error = error {

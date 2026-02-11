@@ -58,6 +58,11 @@ class InteractiveWebView: WKWebView {
     }
 }
 
+enum ViewMode {
+    case preview
+    case source
+}
+
 public class PreviewViewController: NSViewController, QLPreviewingController, WKNavigationDelegate, WKScriptMessageHandler {
 
     var statusLabel: NSTextField!
@@ -66,6 +71,7 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
     var currentURL: URL?
     var isWebViewLoaded = false
     var currentZoomLevel: Double = 1.0
+    var currentViewMode: ViewMode = .preview
     
     // MARK: - Process Pool Management
     
@@ -215,6 +221,7 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
     }
     
     private var themeButton: NSButton!
+    private var sourceButton: NSButton!
     
     public override func loadView() {
         os_log("🔵 loadView called", log: logger, type: .debug)
@@ -304,6 +311,7 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
         os_log("🔵 WebView initialized and added to view", log: logger, type: .default)
         
         setupThemeButton()
+        setupSourceButton()
         
         var bundleURL: URL?
         if let url = Bundle(for: type(of: self)).url(forResource: "index", withExtension: "html", subdirectory: "WebRenderer") {
@@ -521,6 +529,122 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
         }
     }
     
+    private func setupSourceButton() {
+        let button = NSButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.bezelStyle = .circular
+        button.isBordered = false
+        button.wantsLayer = true
+        button.layer?.backgroundColor = NSColor.black.withAlphaComponent(0.1).cgColor
+        button.layer?.cornerRadius = 15
+        button.target = self
+        button.action = #selector(toggleViewMode)
+        
+        self.view.addSubview(button)
+        self.sourceButton = button
+        
+        NSLayoutConstraint.activate([
+            button.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 10),
+            button.trailingAnchor.constraint(equalTo: themeButton.leadingAnchor, constant: -8),
+            button.widthAnchor.constraint(equalToConstant: 30),
+            button.heightAnchor.constraint(equalToConstant: 30)
+        ])
+        
+        updateSourceButtonState()
+    }
+    
+    @objc private func toggleViewMode() {
+        webView.evaluateJavaScript("window.scrollY || document.documentElement.scrollTop") { [weak self] result, error in
+            guard let self = self else { return }
+            
+            let scrollY = (result as? Double) ?? 0.0
+            
+            self.currentViewMode = (self.currentViewMode == .preview) ? .source : .preview
+            self.updateSourceButtonState()
+            
+            if self.isWebViewLoaded {
+                self.renderCurrentMode()
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    let scrollJS = "window.scrollTo({ top: \(scrollY), behavior: 'auto' });"
+                    self.webView.evaluateJavaScript(scrollJS) { _, error in
+                        if error == nil {
+                            os_log("🔵 Restored scroll position: %.0f after mode switch", 
+                                   log: self.logger, type: .default, scrollY)
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    private func updateSourceButtonState() {
+        let iconName = (currentViewMode == .source) ? "eye.fill" : "doc.text.fill"
+        let iconColor = (currentViewMode == .source) ? NSColor.systemBlue : NSColor.darkGray
+        
+        if let image = NSImage(systemSymbolName: iconName, accessibilityDescription: "Toggle Source View") {
+            sourceButton.image = image
+            sourceButton.contentTintColor = iconColor
+        }
+    }
+    
+    private func renderCurrentMode() {
+        if currentViewMode == .preview {
+            renderPendingMarkdown()
+        } else {
+            renderSourceView()
+        }
+    }
+    
+    private func renderSourceView() {
+        guard let content = pendingMarkdown else {
+            os_log("🟡 renderSourceView called but pendingMarkdown is nil", log: logger, type: .debug)
+            return
+        }
+        
+        guard isWebViewLoaded else {
+            os_log("🟡 renderSourceView called but WebView not ready", log: logger, type: .debug)
+            return
+        }
+        
+        os_log("🔵 renderSourceView called with content length: %d", log: logger, type: .debug, content.count)
+        
+        guard let contentData = try? JSONSerialization.data(withJSONObject: [content], options: []),
+              let contentJsonArray = String(data: contentData, encoding: .utf8) else {
+            os_log("🔴 Failed to encode content to JSON", log: self.logger, type: .error)
+            return
+        }
+        
+        let safeContentArg = String(contentJsonArray.dropFirst().dropLast())
+        
+        let appearanceName = self.view.effectiveAppearance.name
+        var theme = "system"
+        if appearanceName == .darkAqua || appearanceName == .vibrantDark || appearanceName == .accessibilityHighContrastDarkAqua || appearanceName == .accessibilityHighContrastVibrantDark {
+            theme = "dark"
+        } else if appearanceName == .aqua || appearanceName == .vibrantLight || appearanceName == .accessibilityHighContrastAqua || appearanceName == .accessibilityHighContrastVibrantLight {
+            theme = "light"
+        }
+        
+        let callJs = """
+        try {
+            window.renderSource(\(safeContentArg), "\(theme)");
+            "success"
+        } catch(e) {
+            "error: " + e.toString()
+        }
+        """
+        
+        self.webView.evaluateJavaScript(callJs) { (innerResult, innerError) in
+            if let innerError = innerError {
+                os_log("🔴 JS Execution Error (renderSource): %{public}@", log: self.logger, type: .error, innerError.localizedDescription)
+            } else if let res = innerResult as? String {
+                os_log("🔵 JS Execution Result (renderSource): %{public}@", log: self.logger, type: .debug, res)
+            }
+            
+            self.applyZoom()
+        }
+    }
+    
     @objc private func zoomIn() {
         currentZoomLevel = min(currentZoomLevel + 0.1, 3.0)
         applyZoom()
@@ -563,6 +687,15 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
             case "0":
                 os_log("🔵 Reset Zoom triggered", log: logger, type: .default)
                 resetZoom()
+                return nil
+            default:
+                break
+            }
+        } else if flags == [.command, .shift] {
+            switch event.charactersIgnoringModifiers {
+            case "M", "m":
+                os_log("🔵 Toggle View Mode triggered", log: logger, type: .default)
+                toggleViewMode()
                 return nil
             default:
                 break

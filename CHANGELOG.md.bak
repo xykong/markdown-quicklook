@@ -1,6 +1,5 @@
 # Changelog
 
-## [Unreleased]
 ### Added
 - **双模式显示 (Preview/Source Toggle)**: 实现预览模式与源码模式的快速切换功能。
   - **QuickLook 预览**:

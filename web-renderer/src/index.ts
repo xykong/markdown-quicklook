@@ -38,6 +38,7 @@ import 'katex/dist/katex.min.css';
 import './styles/table-of-contents.css';
 import './styles/image-fallback.css';
 import './styles/search.css';
+import './styles/source-view.css';
 
 import MarkdownIt from 'markdown-it';
 import hljs from 'highlight.js';
@@ -155,6 +156,7 @@ let searchUI: SearchUI | null = null;
 declare global {
     interface Window {
         renderMarkdown: (text: string, options?: { baseUrl?: string, theme?: string, imageData?: Record<string, string> }) => Promise<void>;
+        renderSource: (text: string, theme: string) => void;
         setZoomLevel: (level: number) => void;
         showSearch: () => void;
         hideSearch: () => void;
@@ -393,6 +395,40 @@ window.renderMarkdown = async function (text: string, options: { baseUrl?: strin
         if (outputDiv) {
             outputDiv.innerHTML = `<div style="color: red; padding: 20px; border: 1px solid red; border-radius: 5px;">
                 <h3>Rendering Error</h3>
+                <pre>${e}</pre>
+            </div>`;
+        }
+    }
+};
+
+window.renderSource = function(text: string, theme: string) {
+    const outputDiv = document.getElementById('markdown-preview');
+    const loadingDiv = document.getElementById('loading-status');
+    
+    if (loadingDiv) {
+        loadingDiv.style.display = 'none';
+    }
+    
+    if (!outputDiv) {
+        logToSwift("JS Error: markdown-preview element not found");
+        return;
+    }
+
+    try {
+        const highlighted = hljs.highlight(text, { language: 'markdown', ignoreIllegals: true });
+        
+        outputDiv.innerHTML = `
+            <div class="source-view ${theme === 'dark' ? 'source-view-dark' : 'source-view-light'}">
+                <pre class="source-pre"><code class="hljs language-markdown">${highlighted.value}</code></pre>
+            </div>
+        `;
+        
+        logToSwift(`[Source View] Rendered ${text.length} characters with theme: ${theme}`);
+    } catch (e) {
+        logToSwift("JS Error during source rendering: " + e);
+        if (outputDiv) {
+            outputDiv.innerHTML = `<div style="color: red; padding: 20px; border: 1px solid red; border-radius: 5px;">
+                <h3>Source Rendering Error</h3>
                 <pre>${e}</pre>
             </div>`;
         }

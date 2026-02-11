@@ -65,13 +65,50 @@ struct MarkdownApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @ObservedObject var preference = AppearancePreference.shared
     
+    @State private var viewMode: ViewMode = .preview
+    
     var body: some Scene {
         DocumentGroup(newDocument: MarkdownDocument()) { file in
-            MarkdownWebView(content: file.document.text, fileURL: file.fileURL, appearanceMode: preference.currentMode)
-                .frame(minWidth: 800, idealWidth: 1000, maxWidth: .infinity,
-                       minHeight: 600, idealHeight: 800, maxHeight: .infinity)
-                .environmentObject(preference)
-                .background(WindowAccessor())
+            ZStack(alignment: .topTrailing) {
+                MarkdownWebView(
+                    content: file.document.text,
+                    fileURL: file.fileURL,
+                    appearanceMode: preference.currentMode,
+                    viewMode: viewMode
+                )
+                
+                HStack(spacing: 8) {
+                    Button(action: {
+                        viewMode = (viewMode == .preview) ? .source : .preview
+                    }) {
+                        Image(systemName: viewMode == .source ? "eye.fill" : "doc.text.fill")
+                            .foregroundColor(viewMode == .source ? .blue : .secondary)
+                            .frame(width: 30, height: 30)
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                    .background(Color.black.opacity(0.1))
+                    .clipShape(Circle())
+                    .help(viewMode == .source ? "Show Preview" : "Show Source")
+                    
+                    Button(action: {
+                        let current = preference.currentMode
+                        preference.currentMode = (current == .dark) ? .light : .dark
+                    }) {
+                        Image(systemName: preference.currentMode == .dark ? "sun.max.fill" : "moon.fill")
+                            .foregroundColor(preference.currentMode == .dark ? .yellow : .secondary)
+                            .frame(width: 30, height: 30)
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                    .background(Color.black.opacity(0.1))
+                    .clipShape(Circle())
+                    .help(preference.currentMode == .dark ? "Light Mode" : "Dark Mode")
+                }
+                .padding([.top, .trailing], 10)
+            }
+            .frame(minWidth: 800, idealWidth: 1000, maxWidth: .infinity,
+                   minHeight: 600, idealHeight: 800, maxHeight: .infinity)
+            .environmentObject(preference)
+            .background(WindowAccessor())
         }
         .commands {
             CommandGroup(after: .appInfo) {
@@ -79,6 +116,15 @@ struct MarkdownApp: App {
             }
             
             CommandMenu("View") {
+                Button(action: {
+                    viewMode = (viewMode == .preview) ? .source : .preview
+                }) {
+                    Text(viewMode == .source ? "Show Preview" : "Show Source")
+                }
+                .keyboardShortcut("m", modifiers: [.command, .shift])
+                
+                Divider()
+                
                 Button(action: {
                     NotificationCenter.default.post(name: .toggleSearch, object: nil)
                 }) {

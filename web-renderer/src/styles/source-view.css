@@ -1,0 +1,55 @@
+.source-view {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.source-view-light {
+    background-color: #ffffff;
+    color: #24292e;
+}
+
+.source-view-dark {
+    background-color: #0d1117;
+    color: #c9d1d9;
+}
+
+.source-view .source-pre {
+    margin: 0;
+    padding: 6px;
+    border-radius: 0;
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.source-view-light .source-pre {
+    background-color: #f6f8fa;
+    border: 1px solid #d0d7de;
+}
+
+.source-view-dark .source-pre {
+    background-color: #161b22;
+    border: 1px solid #30363d;
+}
+
+.source-view .source-pre code {
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+.source-view .hljs {
+    background: transparent;
+    padding: 0;
+    overflow: visible;
+}

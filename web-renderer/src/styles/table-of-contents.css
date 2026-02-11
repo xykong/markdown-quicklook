@@ -1,6 +1,6 @@
 #toc-container {
     position: fixed;
-    top: 20px;
+    top: 60px;
     right: 20px;
     z-index: 1000;
     max-width: 300px;
@@ -8,7 +8,7 @@
 
 .toc-toggle {
     position: fixed;
-    top: 20px;
+    top: 60px;
     right: 20px;
     width: 44px;
     height: 44px;
@@ -36,7 +36,7 @@
 
 .toc-nav {
     position: fixed;
-    top: 75px;
+    top: 115px;
     right: 20px;
     width: 280px;
     max-height: calc(100vh - 120px);

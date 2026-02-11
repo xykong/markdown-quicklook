@@ -52,3 +52,6 @@ test-base64.html
 
 # Claude AI configuration
 .claude/
+
+# Backup files
+*.backup
