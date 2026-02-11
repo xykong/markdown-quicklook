@@ -7,6 +7,48 @@
         <language>zh-CN</language>
         
         <item>
+            <title>Version 1.11.130</title>
+            <link>https://github.com/xykong/markdown-quicklook/releases/tag/v1.11.130</link>
+            <sparkle:version>131</sparkle:version>
+            <sparkle:shortVersionString>1.11.130</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
+            <pubDate>Tue, 11 Feb 2026 11:09:00 +0000</pubDate>
+            <enclosure
+                url="https://github.com/xykong/markdown-quicklook/releases/download/v1.11.130/MarkdownPreviewEnhanced.dmg"
+                sparkle:edSignature="mN7YER9FykmegvX7im5BbSL9YGUNE82eDXYG+i/OVLbaOyL5glqFYRkf85fMPhuppMdLdC7GOMtqC5smxuNJBg=="
+                length="7386706"
+                type="application/octet-stream" />
+            <description><![CDATA[
+                <h2>新增功能 / Added</h2>
+                <ul>
+                    <li><strong>链接导航 (Link Navigation)</strong>: 为 Markdown 文档添加完整的链接跳转支持</li>
+                    <li><strong>主应用 (Main App)</strong>:
+                        <ul>
+                            <li>外部 URL 链接 (http/https) 在默认浏览器中打开</li>
+                            <li>相对路径链接 (<code>../file.md</code>, <code>./dir/file.md</code>) 正确解析并打开目标文件</li>
+                            <li>页内锚点链接 (<code>#section</code>) 平滑滚动定位</li>
+                            <li>支持所有文件类型 (<code>.md</code>, <code>.sql</code>, <code>.py</code>, <code>.json</code> 等)</li>
+                        </ul>
+                    </li>
+                    <li><strong>QuickLook 预览 (Preview)</strong>:
+                        <ul>
+                            <li>由于 macOS 沙盒限制，所有链接点击时显示优雅的 toast 提示</li>
+                            <li>Toast 位置: 顶部居中，自动关闭 (3 秒)</li>
+                            <li>非阻塞: 用户可继续浏览文档</li>
+                        </ul>
+                    </li>
+                    <li><strong>技术实现</strong>:
+                        <ul>
+                            <li>端到端桥接: JavaScript 通过 <code>window.webkit.messageHandlers.linkClicked</code> 传递链接信息给 Swift</li>
+                            <li>页内锚点: JavaScript 直接处理平滑滚动</li>
+                            <li>文件路径解析: 支持相对路径、绝对路径、<code>file://</code> 协议</li>
+                        </ul>
+                    </li>
+                </ul>
+            ]]></description>
+        </item>
+        
+        <item>
             <title>Version 1.10.127</title>
             <link>https://github.com/xykong/markdown-quicklook/releases/tag/v1.10.127</link>
             <sparkle:version>127</sparkle:version>
