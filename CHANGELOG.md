@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased]
+_无待发布的变更_
+
+## [1.11.130] - 2026-02-11
 
 ### Added
 - **链接导航 (Link Navigation)**: 为 Markdown 文档添加完整的链接跳转支持。
