@@ -1,7 +1,26 @@
 # Changelog
 
 ## [Unreleased]
-_无待发布的变更_
+
+### Added
+- **链接导航 (Link Navigation)**: 为 Markdown 文档添加完整的链接跳转支持。
+  - **主应用 (Main App)**:
+    - 外部 URL 链接 (http/https) 在默认浏览器中打开
+    - 相对路径链接 (`../file.md`, `./dir/file.md`) 正确解析并打开目标文件
+    - 页内锚点链接 (`#section`) 平滑滚动定位
+    - 支持所有文件类型 (`.md`, `.sql`, `.py`, `.json` 等)
+  - **QuickLook 预览 (Preview)**:
+    - 由于 macOS 沙盒限制,所有链接点击时显示优雅的 toast 提示而非打扰用户的对话框
+    - Toast 位置: 顶部居中
+    - 自动关闭: 3 秒后淡出消失
+    - 非阻塞: 用户可继续浏览文档
+    - 防重复: 同时只显示一个 toast
+    - 提示文案: "QuickLook 预览模式不支持链接跳转 / 请双击 .md 文件用主应用打开以使用完整功能"
+  - **技术实现**:
+    - 端到端桥接: JavaScript 通过 `window.webkit.messageHandlers.linkClicked` 将链接信息传递给 Swift
+    - 页内锚点: JavaScript 直接处理平滑滚动
+    - 文件路径解析: 支持相对路径、绝对路径、`file://` 协议等多种格式
+    - 日志增强: 所有链接点击操作记录到系统日志,便于调试
 
 ## [1.10.127] - 2026-02-10
 

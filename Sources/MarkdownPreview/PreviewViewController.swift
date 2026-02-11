@@ -292,6 +292,7 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
         
         let userContentController = WKUserContentController()
         userContentController.add(self, name: "logger")
+        userContentController.add(self, name: "linkClicked")
         webConfiguration.userContentController = userContentController
         
         os_log("🔵 initializing InteractiveWebView instance...", log: logger, type: .default)
@@ -446,6 +447,7 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
         webView.stopLoading()
         webView.navigationDelegate = nil
         webView.configuration.userContentController.removeScriptMessageHandler(forName: "logger")
+        webView.configuration.userContentController.removeScriptMessageHandler(forName: "linkClicked")
         
         for recognizer in webView.gestureRecognizers {
             webView.removeGestureRecognizer(recognizer)
@@ -909,7 +911,12 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
             return
         }
         
-        os_log("🔵 Link clicked: %{public}@", log: logger, type: .debug, url.absoluteString)
+        os_log("🔵 Link clicked: %{public}@", log: logger, type: .default, url.absoluteString)
+        os_log("🔵   - scheme: %{public}@, isFileURL: %{public}@, path: %{public}@", 
+               log: logger, type: .default, 
+               url.scheme ?? "nil", 
+               url.isFileURL ? "YES" : "NO", 
+               url.path)
         
         if let fragment = url.fragment, !fragment.isEmpty {
             var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false)
@@ -923,31 +930,28 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
             let isSameDocument = targetPath.isEmpty || currentPath == targetPath || url.scheme == nil
             
             if isSameDocument {
-                os_log("🔵 Scrolling to anchor: #%{public}@", log: logger, type: .debug, fragment)
-                let escapedFragment = fragment.replacingOccurrences(of: "'", with: "\\'")
-                let js = "document.getElementById('\(escapedFragment)')?.scrollIntoView({behavior:'smooth',block:'start'})"
-                webView.evaluateJavaScript(js, completionHandler: nil)
+                os_log("🔵 Same-document anchor link, letting JavaScript handle it", log: logger, type: .default)
                 decisionHandler(.cancel)
                 return
             }
         }
         
-        // Handle external links (http/https) - open in default browser
         if url.scheme == "http" || url.scheme == "https" {
-            os_log("🔵 Opening external URL in browser: %{public}@", log: logger, type: .debug, url.absoluteString)
+            os_log("🔵 Opening external URL in browser: %{public}@", log: logger, type: .default, url.absoluteString)
             NSWorkspace.shared.open(url)
             decisionHandler(.cancel)
             return
         }
         
-        // Handle local markdown file links - open with QuickLook or default app
-        if url.isFileURL && url.pathExtension.lowercased() == "md" {
-            os_log("🔵 Opening local markdown file: %{public}@", log: logger, type: .debug, url.path)
+        if url.isFileURL {
+            os_log("🔵 Opening local file with default app: %{public}@ (extension: %{public}@)", 
+                   log: logger, type: .default, url.path, url.pathExtension)
             NSWorkspace.shared.open(url)
             decisionHandler(.cancel)
             return
         }
         
+        os_log("🔵 Allowing navigation (unhandled scheme: %{public}@)", log: logger, type: .default, url.scheme ?? "nil")
         decisionHandler(.allow)
     }
 
@@ -965,12 +969,108 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
                 os_log("🟢 Renderer Handshake Received!", log: logger, type: .default)
                 cancelHandshakeTimeout()
                 
-                // Always mark as loaded and render. 
-                // We do NOT check !isWebViewLoaded here because a Reload action
-                // might have reset the WebView content (sending a new handshake)
-                // without the Swift side catching the navigation start event in time.
                 isWebViewLoaded = true
                 renderPendingMarkdown()
+            }
+        } else if message.name == "linkClicked", let href = message.body as? String {
+            os_log("🔵 Link clicked from JS: %{public}@", log: logger, type: .default, href)
+            handleLinkClick(href: href)
+        }
+    }
+    
+    private func handleLinkClick(href: String) {
+        if href.starts(with: "http://") || href.starts(with: "https://") {
+            if let url = URL(string: href) {
+                os_log("🔵 Opening external URL: %{public}@", log: logger, type: .default, href)
+                let success = NSWorkspace.shared.open(url)
+                os_log("🔵 NSWorkspace.open result: %{public}@", log: logger, type: .default, success ? "SUCCESS" : "FAILED")
+                
+                if !success {
+                    os_log("🔴 Failed to open URL in QuickLook Extension sandbox", log: logger, type: .error)
+                    showLinkUnsupportedToast()
+                }
+            }
+            return
+        }
+        
+        os_log("🔵 Local file link clicked: %{public}@", log: logger, type: .default, href)
+        showLinkUnsupportedToast()
+    }
+    
+    private var toastView: NSView?
+    
+    private func showLinkUnsupportedToast() {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            
+            if self.toastView != nil {
+                return
+            }
+            
+            let toastContainer = NSView()
+            toastContainer.wantsLayer = true
+            toastContainer.layer?.backgroundColor = NSColor.controlAccentColor.withAlphaComponent(0.95).cgColor
+            toastContainer.layer?.cornerRadius = 8
+            toastContainer.translatesAutoresizingMaskIntoConstraints = false
+            
+            let iconImageView = NSImageView()
+            iconImageView.image = NSImage(systemSymbolName: "info.circle.fill", accessibilityDescription: nil)
+            iconImageView.contentTintColor = .white
+            iconImageView.translatesAutoresizingMaskIntoConstraints = false
+            
+            let messageLabel = NSTextField(labelWithString: "QuickLook 预览模式不支持链接跳转")
+            messageLabel.textColor = .white
+            messageLabel.font = .systemFont(ofSize: 13, weight: .medium)
+            messageLabel.translatesAutoresizingMaskIntoConstraints = false
+            
+            let hintLabel = NSTextField(labelWithString: "请双击 .md 文件用主应用打开以使用完整功能")
+            hintLabel.textColor = NSColor.white.withAlphaComponent(0.9)
+            hintLabel.font = .systemFont(ofSize: 11)
+            hintLabel.translatesAutoresizingMaskIntoConstraints = false
+            
+            toastContainer.addSubview(iconImageView)
+            toastContainer.addSubview(messageLabel)
+            toastContainer.addSubview(hintLabel)
+            self.view.addSubview(toastContainer)
+            
+            NSLayoutConstraint.activate([
+                toastContainer.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 16),
+                toastContainer.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+                toastContainer.widthAnchor.constraint(lessThanOrEqualToConstant: 500),
+                
+                iconImageView.leadingAnchor.constraint(equalTo: toastContainer.leadingAnchor, constant: 12),
+                iconImageView.centerYAnchor.constraint(equalTo: toastContainer.centerYAnchor),
+                iconImageView.widthAnchor.constraint(equalToConstant: 20),
+                iconImageView.heightAnchor.constraint(equalToConstant: 20),
+                
+                messageLabel.leadingAnchor.constraint(equalTo: iconImageView.trailingAnchor, constant: 8),
+                messageLabel.trailingAnchor.constraint(equalTo: toastContainer.trailingAnchor, constant: -12),
+                messageLabel.topAnchor.constraint(equalTo: toastContainer.topAnchor, constant: 10),
+                
+                hintLabel.leadingAnchor.constraint(equalTo: messageLabel.leadingAnchor),
+                hintLabel.trailingAnchor.constraint(equalTo: messageLabel.trailingAnchor),
+                hintLabel.topAnchor.constraint(equalTo: messageLabel.bottomAnchor, constant: 2),
+                hintLabel.bottomAnchor.constraint(equalTo: toastContainer.bottomAnchor, constant: -10)
+            ])
+            
+            self.toastView = toastContainer
+            
+            toastContainer.alphaValue = 0
+            NSAnimationContext.runAnimationGroup({ context in
+                context.duration = 0.3
+                toastContainer.animator().alphaValue = 1
+            })
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) { [weak self] in
+                guard let self = self, let toast = self.toastView else { return }
+                
+                NSAnimationContext.runAnimationGroup({ context in
+                    context.duration = 0.3
+                    toast.animator().alphaValue = 0
+                }, completionHandler: {
+                    toast.removeFromSuperview()
+                    self.toastView = nil
+                })
             }
         }
     }

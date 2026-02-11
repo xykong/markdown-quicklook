@@ -14,6 +14,7 @@ A macOS QuickLook extension to beautifully preview Markdown files with full rend
 - **Syntax Highlighting**: Code blocks with language-specific highlighting
 - **Emoji**: Full emoji support with `:emoji_name:` syntax
 - **Table of Contents**: Auto-generated, collapsible navigation panel with smart highlighting
+- **Link Navigation**: Full link support in the main app. Click links to open external URLs, navigate to local files, or scroll to anchors. QuickLook shows a non-intrusive toast due to sandbox limitations.
 - **Theme**: Configurable appearance (Light, Dark, or System). Defaults to Light mode for better readability.
 - **Zoom**: Keyboard shortcuts (`Cmd +/-/0`), scroll wheel zoom (hold `Cmd` and scroll), and pinch gesture (two-finger pinch) with persistence
 - **Scroll Position Memory**: Automatically remembers scroll position for eachMarkdown file and restores it on next preview
@@ -196,6 +197,25 @@ Or simply select any `.md` file in Finder and press Space (QuickLook shortcut).
 
 **To grant permissions without dialog:**
 - You can pre-authorize in System Settings before using the app
+
+### Link Navigation in QuickLook
+
+**Problem:** Clicking links in QuickLook preview shows a toast notification instead of navigating.
+
+**Why this happens:**
+- macOS App Sandbox restricts QuickLook extensions from opening files or external URLs
+- This is a system-level security feature that cannot be bypassed
+- The toast is a non-intrusive way to inform users about this limitation
+
+**Solution:**
+- Double-click the `.md` file to open it in the main app instead
+- The main app has full link navigation support without sandbox restrictions
+
+**Supported link types (Main App only):**
+- External URLs: `https://example.com` → Opens in default browser
+- Relative paths: `./other.md` or `../dir/file.md` → Opens the target file
+- Anchors: `#section` → Smooth scroll to the section
+- All file types: `.md`, `.sql`, `.py`, `.json`, etc. → Opens with default app
 
 ## Acknowledgements
 

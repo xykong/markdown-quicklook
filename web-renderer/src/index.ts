@@ -175,6 +175,17 @@ window.renderMarkdown = async function (text: string, options: { baseUrl?: strin
         return;
     }
 
+    if (options.baseUrl) {
+        let existingBase = document.querySelector('base');
+        if (!existingBase) {
+            existingBase = document.createElement('base');
+            document.head.insertBefore(existingBase, document.head.firstChild);
+        }
+        const baseHref = options.baseUrl.endsWith('/') ? options.baseUrl : options.baseUrl + '/';
+        existingBase.setAttribute('href', 'file://' + baseHref);
+        logToSwift(`[Base URL] Set to: file://${baseHref}`);
+    }
+
     let currentTheme = options.theme || 'default';
     if (currentTheme === 'system') {
         currentTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default';
@@ -396,6 +407,8 @@ function handleAnchorClick(e: Event) {
     const href = anchor.getAttribute('href');
     if (!href) return;
     
+    logToSwift(`[Click] href="${href}"`);
+    
     if (href.startsWith('#')) {
         e.preventDefault();
         e.stopPropagation();
@@ -404,10 +417,23 @@ function handleAnchorClick(e: Event) {
         if (targetElement) {
             targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
-    } else if (href.startsWith('http://') || href.startsWith('https://')) {
-        e.preventDefault();
-        e.stopPropagation();
-        logToSwift("openExternalURL:" + href);
+        logToSwift(`[Click] Scrolled to anchor: #${targetId}`);
+        return;
+    }
+    
+    e.preventDefault();
+    e.stopPropagation();
+    
+    try {
+        if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.linkClicked) {
+            // @ts-ignore
+            window.webkit.messageHandlers.linkClicked.postMessage(href);
+            logToSwift(`[Click] Sent link to Swift: ${href}`);
+        } else {
+            logToSwift(`[Click] ERROR: linkClicked handler not found`);
+        }
+    } catch (error) {
+        logToSwift(`[Click] ERROR: ${error}`);
     }
 }
 

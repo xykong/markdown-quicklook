@@ -21,6 +21,7 @@ struct MarkdownWebView: NSViewRepresentable {
         webConfiguration.processPool = MarkdownWebView.sharedProcessPool
         let userContentController = WKUserContentController()
         userContentController.add(coordinator, name: "logger")
+        userContentController.add(coordinator, name: "linkClicked")
         
         let debugSource = """
         window.onerror = function(msg, url, line, col, error) {
@@ -89,6 +90,7 @@ struct MarkdownWebView: NSViewRepresentable {
         var isWebViewLoaded = false
         var pendingRender: (() -> Void)?
         weak var currentWebView: WKWebView?
+        var currentFileURL: URL?
         
         override init() {
             super.init()
@@ -218,12 +220,12 @@ struct MarkdownWebView: NSViewRepresentable {
         }
         
         func render(webView: WKWebView, content: String, fileURL: URL?) {
-            // Save the render action
+            currentFileURL = fileURL
+            
             pendingRender = { [weak self] in
                 self?.executeRender(webView: webView, content: content, fileURL: fileURL)
             }
             
-            // If already loaded, render immediately
             if isWebViewLoaded {
                 pendingRender?()
                 pendingRender = nil
@@ -308,7 +310,52 @@ struct MarkdownWebView: NSViewRepresentable {
                         pendingRender = nil
                     }
                 }
+            } else if message.name == "linkClicked", let href = message.body as? String {
+                os_log("🔵 Link clicked from JS: %{public}@", log: logger, type: .default, href)
+                handleLinkClick(href: href)
             }
+        }
+        
+        private func handleLinkClick(href: String) {
+            if href.starts(with: "http://") || href.starts(with: "https://") {
+                if let url = URL(string: href) {
+                    os_log("🔵 Opening external URL: %{public}@", log: logger, type: .default, href)
+                    NSWorkspace.shared.open(url)
+                }
+                return
+            }
+            
+            guard let fileURL = currentFileURL else {
+                os_log("🔴 Cannot resolve relative path: no current file URL", log: logger, type: .error)
+                return
+            }
+            
+            let baseDir = fileURL.deletingLastPathComponent()
+            var targetURL: URL
+            
+            if href.starts(with: "file://") {
+                guard let url = URL(string: href) else {
+                    os_log("🔴 Invalid file URL: %{public}@", log: logger, type: .error, href)
+                    return
+                }
+                targetURL = url
+            } else if href.starts(with: "/") {
+                targetURL = URL(fileURLWithPath: href)
+            } else {
+                targetURL = baseDir
+                for component in href.split(separator: "/") {
+                    let componentStr = String(component)
+                    if componentStr == ".." {
+                        targetURL.deleteLastPathComponent()
+                    } else if componentStr != "." {
+                        targetURL.appendPathComponent(componentStr)
+                    }
+                }
+            }
+            
+            os_log("🔵 Opening local file: %{public}@ (base: %{public}@, href: %{public}@)", 
+                   log: logger, type: .default, targetURL.path, baseDir.path, href)
+            NSWorkspace.shared.open(targetURL)
         }
         
         func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
