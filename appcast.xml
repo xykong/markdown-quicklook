@@ -5,7 +5,24 @@
         <link>https://xykong.github.io/markdown-quicklook/appcast.xml</link>
         <description>Most recent updates to Markdown Preview Enhanced</description>
         <language>zh-CN</language>
-        
+
+        <item>
+            <title>Version 1.12.137</title>
+            <link>https://github.com/xykong/markdown-quicklook/releases/tag/v1.12.137</link>
+            <sparkle:version>137</sparkle:version>
+            <sparkle:shortVersionString>1.12.137</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
+            <pubDate>Wed, 11 Feb 2026 12:48:19 +0000</pubDate>
+            <enclosure
+                url="https://github.com/xykong/markdown-quicklook/releases/download/v1.12.137/MarkdownPreviewEnhanced.dmg"
+                sparkle:edSignature="PiNAoPDeIvouQ9k7y9ZY7nKenxngWaCqahIsYH1dfq04ecAIcMe0VKjyj4kO1daw7sAalUvTFOqcRdohO2OxBA=="
+                length="7428647"
+                type="application/octet-stream" />
+            <description><![CDATA[
+                <h2>更新内容</h2><pre></pre><p><a href="https://github.com/xykong/markdown-quicklook/releases/tag/v1.12.137">查看完整更新日志</a></p>
+            ]]></description>
+        </item>
+                
         <item>
             <title>Version 1.11.130</title>
             <link>https://github.com/xykong/markdown-quicklook/releases/tag/v1.11.130</link>
