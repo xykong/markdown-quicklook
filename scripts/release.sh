@@ -28,18 +28,21 @@ fi
 CURRENT_FULL_VERSION=$(cat "$VERSION_FILE")
 IFS='.' read -r major minor build <<< "$CURRENT_FULL_VERSION"
 
+# Get current git commit count for build number alignment
+COMMIT_COUNT=$(git rev-list --count HEAD)
+
 if [[ "$BUMP_TYPE" == "major" ]]; then
     major=$((major + 1))
     minor=0
-    build=$((build + 1))
-    echo "🚀 Bumping Major Version: $CURRENT_FULL_VERSION -> $major.$minor.$build"
+    build=$COMMIT_COUNT
+    echo "🚀 Bumping Major Version: $CURRENT_FULL_VERSION -> $major.$minor.$build (aligned with commit #$COMMIT_COUNT)"
 elif [[ "$BUMP_TYPE" == "minor" ]]; then
     minor=$((minor + 1))
-    build=$((build + 1))
-    echo "🚀 Bumping Minor Version: $CURRENT_FULL_VERSION -> $major.$minor.$build"
+    build=$COMMIT_COUNT
+    echo "🚀 Bumping Minor Version: $CURRENT_FULL_VERSION -> $major.$minor.$build (aligned with commit #$COMMIT_COUNT)"
 elif [[ "$BUMP_TYPE" == "patch" ]]; then
-    build=$((build + 1))
-    echo "🚀 Patch Version: $CURRENT_FULL_VERSION -> $major.$minor.$build"
+    build=$COMMIT_COUNT
+    echo "🚀 Patch Version: $CURRENT_FULL_VERSION -> $major.$minor.$build (aligned with commit #$COMMIT_COUNT)"
 fi
 
 NEW_FULL_VERSION="$major.$minor.$build"

@@ -33,7 +33,7 @@ macOS QuickLook extension for Markdown files. Hybrid architecture: Native Swift 
 ## ARCHITECTURE & PATTERNS
 - **Hybrid Bridge**: Swift loads `index.html`, calls `window.renderMarkdown(content)`. JS logs back via `window.webkit.messageHandlers.logger`.
 - **Ephemeral Project**: `.xcodeproj` is ignored. Always use `xcodegen` (`make generate`).
-- **Versioning**: `.version` file stores base version (e.g., `1.2`). Full version = `{base}.{git_commit_count}`.
+- **Versioning**: `.version` file stores full version (e.g., `1.13.149`). Build number (third part) aligns with git commit count.
 - **Sandbox**: App Sandbox enabled. Read-only access to files.
 - **Release Flow**: 
   1. **PR Merged**: Run `./scripts/analyze-pr.sh <PR_NUMBER>` to generate CHANGELOG entry, add to `[Unreleased]` section.
