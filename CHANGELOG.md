@@ -14,6 +14,16 @@
     - "QuickLook preview does not support link navigation" (QuickLook 预览模式不支持链接跳转)
     - "Double-click .md file to open in main app for full functionality" (请双击 .md 文件用主应用打开以使用完整功能)
 
+
+### Changed
+- **菜单布局优化**: 优化菜单栏结构以符合 Apple Human Interface Guidelines (HIG)
+  - **Find 菜单曲目**: 从 Window 菜单移至 Edit 菜单（位置：.textEditing 组）
+    - 符合 macOS 标准惯例，快捷键 ⌘+F
+  - **Show Source 菜单项**: 从 Window 菜单移至 View 菜单（位置：.toolbar 组）
+    - 快捷键 ⌘+⇧+M，更适合视图切换操作
+  - **Appearance 子菜单**: 从 Window 菜单移至 View 菜单（位置：.toolbar 组）
+    - 主题选择属于视图配置，不符合窗口管理范畴
+  - **Window 菜单**: 现在仅保留窗口管理相关功能
 ## [1.13.141] - 2026-02-13
 
 ### Fixed
