@@ -7,6 +7,23 @@
         <language>zh-CN</language>
 
         <item>
+            <title>Version 1.13.141</title>
+            <link>https://github.com/xykong/markdown-quicklook/releases/tag/v1.13.141</link>
+            <sparkle:version>141</sparkle:version>
+            <sparkle:shortVersionString>1.13.141</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
+            <pubDate>Thu, 12 Feb 2026 16:11:33 +0000</pubDate>
+            <enclosure
+                url="https://github.com/xykong/markdown-quicklook/releases/download/v1.13.141/MarkdownPreviewEnhanced.dmg"
+                sparkle:edSignature="EF/GwvLKmxpniNtCHNkhmrLUK5GdTeyFxptLZ60itGYVVKNMR3pwQFvNi/a8MFvLU6/YncgY1xQ6fYfCEOq4Dw=="
+                length="7429119"
+                type="application/octet-stream" />
+            <description><![CDATA[
+                <h2>更新内容</h2><pre></pre><p><a href="https://github.com/xykong/markdown-quicklook/releases/tag/v1.13.141">查看完整更新日志</a></p>
+            ]]></description>
+        </item>
+        
+        <item>
             <title>Version 1.12.137</title>
             <link>https://github.com/xykong/markdown-quicklook/releases/tag/v1.12.137</link>
             <sparkle:version>137</sparkle:version>
