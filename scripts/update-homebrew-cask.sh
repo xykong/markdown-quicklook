@@ -22,6 +22,7 @@ if [ ! -f "$CASK_FILE" ]; then
     echo "❌ Error: Homebrew Cask file not found at $CASK_FILE"
     echo "Please ensure homebrew-tap repository is cloned at ../homebrew-tap"
     exit 1
+fi
 
 echo "🍺 Updating Homebrew Cask for v$VERSION..."
 echo ""
