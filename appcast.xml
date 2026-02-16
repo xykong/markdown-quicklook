@@ -7,16 +7,16 @@
         <language>zh-CN</language>
 
         <item>
-            <title>Version 1.13.150</title>
-            <link>https://github.com/xykong/flux-markdown/releases/tag/v1.13.150</link>
-            <sparkle:version>150</sparkle:version>
-            <sparkle:shortVersionString>1.13.150</sparkle:shortVersionString>
+            <title>Version 1.13.158</title>
+            <link>https://github.com/xykong/flux-markdown/releases/tag/v1.13.158</link>
+            <sparkle:version>158</sparkle:version>
+            <sparkle:shortVersionString>1.13.158</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
-            <pubDate>Thu, 12 Feb 2026 17:26:39 +0000</pubDate>
+            <pubDate>Mon, 16 Feb 2026 15:45:02 +0000</pubDate>
             <enclosure
-                url="https://github.com/xykong/flux-markdown/releases/download/v1.13.150/MarkdownPreviewEnhanced.dmg"
+                url="https://github.com/xykong/flux-markdown/releases/download/v1.13.158/FluxMarkdown.dmg"
                 sparkle:edSignature="d5y3bDHmhRDkLVNZkOvRBG+3y+ZgBttdnG9qhoIITxC02Hgs63AIoWW3waRfV9q0RChKKYUmbWEO9L+LCRWvDg=="
-                length="7493643"
+                length="7494879"
                 type="application/octet-stream" />
             <description><![CDATA[
                 <h2>更新内容</h2><pre>
