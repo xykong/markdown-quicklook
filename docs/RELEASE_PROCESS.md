@@ -48,7 +48,7 @@
 **格式模板**:
 ```markdown
 ### [Added|Fixed|Changed|Removed]
-- **[Scope]**: [简短描述]。（感谢 [@username](https://github.com/username) 的贡献 [#PR_NUMBER](https://github.com/xykong/markdown-quicklook/pull/PR_NUMBER)）
+- **[Scope]**: [简短描述]。（感谢 [@username](https://github.com/username) 的贡献 [#PR_NUMBER](https://github.com/xykong/flux-markdown/pull/PR_NUMBER)）
   - [技术实现细节 1]
   - [技术实现细节 2]
   - [技术实现细节 3]
@@ -57,7 +57,7 @@
 **示例**:
 ```markdown
 ### Fixed
-- **QuickLook**: 修复双击 Markdown 文件时意外触发"使用默认应用打开"的问题。（感谢 [@sxmad](https://github.com/sxmad) 的贡献 [#2](https://github.com/xykong/markdown-quicklook/pull/2)）
+- **QuickLook**: 修复双击 Markdown 文件时意外触发"使用默认应用打开"的问题。（感谢 [@sxmad](https://github.com/sxmad) 的贡献 [#2](https://github.com/xykong/flux-markdown/pull/2)）
   - 通过自定义 `InteractiveWebView` 子类拦截鼠标事件，防止事件冒泡到 QuickLook 宿主。
   - 添加 `NSClickGestureRecognizer` 拦截双击手势，确保 WebView 内的交互（如文本选择）不受影响。
   - 实现 `acceptsFirstMouse(for:)` 方法，允许 WebView 直接响应首次点击事件。
@@ -131,7 +131,7 @@ make release major
 
 6. **创建 GitHub Release**:
    ```bash
-   gh release create "v<VERSION>" build/artifacts/MarkdownPreviewEnhanced.dmg \
+gh release create "v<VERSION>" build/artifacts/FluxMarkdown.dmg \
      --title "v<VERSION>" \
      --notes-file release_notes_tmp.md
    ```
@@ -140,7 +140,7 @@ make release major
 
 检查以下内容：
 
-- [ ] GitHub Release 已创建: https://github.com/xykong/markdown-quicklook/releases/tag/v<VERSION>
+- [ ] GitHub Release 已创建: https://github.com/xykong/flux-markdown/releases/tag/v<VERSION>
 - [ ] DMG 文件已上传
 - [ ] Release Notes 包含所有 PR 的感谢信息
 - [ ] Git tag 已推送
@@ -153,20 +153,20 @@ make release major
 ### 3.1 计算 DMG 的 SHA256
 
 ```bash
-shasum -a 256 build/artifacts/MarkdownPreviewEnhanced.dmg
+shasum -a 256 build/artifacts/FluxMarkdown.dmg
 ```
 
 输出示例：
 ```
-ca72b7201410962f0f5d272149b2405a5d191a8e692d9526f23ecad3882cd306  build/artifacts/MarkdownPreviewEnhanced.dmg
+ca72b7201410962f0f5d272149b2405a5d191a8e692d9526f23ecad3882cd306  build/artifacts/FluxMarkdown.dmg
 ```
 
 ### 3.2 更新 Homebrew Cask
 
-编辑 `../homebrew-tap/Casks/markdown-preview-enhanced.rb`：
+编辑 `../homebrew-tap/Casks/flux-markdown.rb`：
 
 ```ruby
-cask 'markdown-preview-enhanced' do
+cask 'flux-markdown' do
   version '1.3.73'  # 更新版本号
   sha256 'ca72b7201410962f0f5d272149b2405a5d191a8e692d9526f23ecad3882cd306'  # 更新 SHA256
   
@@ -178,8 +178,8 @@ end
 
 ```bash
 cd ../homebrew-tap
-git add Casks/markdown-preview-enhanced.rb
-git commit -m "chore(cask): update markdown-preview-enhanced to v<VERSION>"
+git add Casks/flux-markdown.rb
+git commit -m "chore(cask): update flux-markdown to v<VERSION>"
 git push origin master
 ```
 
@@ -190,10 +190,10 @@ git push origin master
 brew update
 
 # 升级应用
-brew upgrade markdown-preview-enhanced
+brew upgrade flux-markdown
 
 # 或全新安装测试
-brew install --cask markdown-preview-enhanced
+brew install --cask flux-markdown
 ```
 
 ---
@@ -228,7 +228,7 @@ Date:   Tue Jan 13 12:25:58 2026 +0800
 $ make release minor
 🚀 Bumping Minor Version: 1.2 -> 1.3
 🎯 Target Version: 1.3.73
-✅ DMG created successfully at: build/artifacts/MarkdownPreviewEnhanced.dmg
+✅ DMG created successfully at: build/artifacts/FluxMarkdown.dmg
 🎉 Successfully released v1.3.73!
 
 # 4. 回填 CHANGELOG（修正漏掉的步骤）
@@ -241,18 +241,18 @@ $ git push origin master
 $ gh release edit v1.3.73 --notes-file /tmp/release_notes_v1.3.73_updated.md
 
 # 6. 计算 SHA256
-$ shasum -a 256 build/artifacts/MarkdownPreviewEnhanced.dmg
+$ shasum -a 256 build/artifacts/FluxMarkdown.dmg
 ca72b7201410962f0f5d272149b2405a5d191a8e692d9526f23ecad3882cd306
 
 # 7. 更新 Homebrew Cask
 $ cd ../homebrew-tap
-$ vim Casks/markdown-preview-enhanced.rb  # 更新 version 和 sha256
-$ git add Casks/markdown-preview-enhanced.rb
-$ git commit -m "chore(cask): update markdown-preview-enhanced to v1.3.73"
+$ vim Casks/flux-markdown.rb  # 更新 version 和 sha256
+$ git add Casks/flux-markdown.rb
+$ git commit -m "chore(cask): update flux-markdown to v1.3.73"
 $ git push origin master
 
 # 8. 验证
-$ brew upgrade markdown-preview-enhanced
+$ brew upgrade flux-markdown
 ```
 
 ---
@@ -347,7 +347,7 @@ echo "📝 Suggested CHANGELOG Entry:"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 echo "### [TODO: Category]"
-echo "- **[TODO: Scope]**: $PR_TITLE。（感谢 [@$PR_AUTHOR](https://github.com/$PR_AUTHOR) 的贡献 [#$PR_NUMBER](https://github.com/xykong/markdown-quicklook/pull/$PR_NUMBER)）"
+echo "- **[TODO: Scope]**: $PR_TITLE。（感谢 [@$PR_AUTHOR](https://github.com/$PR_AUTHOR) 的贡献 [#$PR_NUMBER](https://github.com/xykong/flux-markdown/pull/$PR_NUMBER)）"
 echo "  - [TODO: 技术实现细节 1]"
 echo "  - [TODO: 技术实现细节 2]"
 echo ""

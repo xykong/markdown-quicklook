@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/">
     <channel>
-        <title>Markdown Preview Enhanced</title>
-        <link>https://xykong.github.io/markdown-quicklook/appcast.xml</link>
-        <description>Most recent updates to Markdown Preview Enhanced</description>
+        <title>FluxMarkdown</title>
+        <link>https://raw.githubusercontent.com/xykong/flux-markdown/master/appcast.xml</link>
+        <description>Most recent updates to FluxMarkdown</description>
         <language>zh-CN</language>
 
         <item>
             <title>Version 1.13.150</title>
-            <link>https://github.com/xykong/markdown-quicklook/releases/tag/v1.13.150</link>
+            <link>https://github.com/xykong/flux-markdown/releases/tag/v1.13.150</link>
             <sparkle:version>150</sparkle:version>
             <sparkle:shortVersionString>1.13.150</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
             <pubDate>Thu, 12 Feb 2026 17:26:39 +0000</pubDate>
             <enclosure
-                url="https://github.com/xykong/markdown-quicklook/releases/download/v1.13.150/MarkdownPreviewEnhanced.dmg"
+                url="https://github.com/xykong/flux-markdown/releases/download/v1.13.150/MarkdownPreviewEnhanced.dmg"
                 sparkle:edSignature="d5y3bDHmhRDkLVNZkOvRBG+3y+ZgBttdnG9qhoIITxC02Hgs63AIoWW3waRfV9q0RChKKYUmbWEO9L+LCRWvDg=="
                 length="7493643"
                 type="application/octet-stream" />
@@ -27,19 +27,19 @@ Added
   - 更新完成后应用重启时自动恢复上次打开的文件
   - 使用 App Groups (group.com.xykong.Markdown) 实现跨进程持久化存储
   - 如果用户之前查看的文件已被删除，会优雅地处理失败情况
-  - 只在更新后触发恢复，正常启动不会影响用户体验</pre><p><a href="https://github.com/xykong/markdown-quicklook/releases/tag/v1.13.150">查看完整更新日志</a></p>
+  - 只在更新后触发恢复，正常启动不会影响用户体验</pre><p><a href="https://github.com/xykong/flux-markdown/releases/tag/v1.13.150">查看完整更新日志</a></p>
             ]]></description>
         </item>
         
         <item>
             <title>Version 1.13.149</title>
-            <link>https://github.com/xykong/markdown-quicklook/releases/tag/v1.13.149</link>
+            <link>https://github.com/xykong/flux-markdown/releases/tag/v1.13.149</link>
             <sparkle:version>149</sparkle:version>
             <sparkle:shortVersionString>1.13.149</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
             <pubDate>Thu, 12 Feb 2026 17:00:30 +0000</pubDate>
             <enclosure
-                url="https://github.com/xykong/markdown-quicklook/releases/download/v1.13.149/MarkdownPreviewEnhanced.dmg"
+                url="https://github.com/xykong/flux-markdown/releases/download/v1.13.149/MarkdownPreviewEnhanced.dmg"
                 sparkle:edSignature="czMOX4jubu9MD2aNls9+uO09X0oocCREJH+6X9x+xHSklU7eOBzqmFKlgFhjZFYCiPgSoUOYLmXTzSxgWI36AA=="
                 length="7319688"
                 type="application/octet-stream" />
@@ -66,19 +66,19 @@ Changed
     - 快捷键 ⌘+⇧+M，更适合视图切换操作
   - **Appearance 子菜单**: 从 Window 菜单移至 View 菜单（位置：.toolbar 组）
     - 主题选择属于视图配置，不符合窗口管理范畴
-  - **Window 菜单**: 现在仅保留窗口管理相关功能</pre><p><a href="https://github.com/xykong/markdown-quicklook/releases/tag/v1.13.149">查看完整更新日志</a></p>
+  - **Window 菜单**: 现在仅保留窗口管理相关功能</pre><p><a href="https://github.com/xykong/flux-markdown/releases/tag/v1.13.149">查看完整更新日志</a></p>
             ]]></description>
         </item>
         
         <item>
             <title>Version 1.13.141</title>
-            <link>https://github.com/xykong/markdown-quicklook/releases/tag/v1.13.141</link>
+<link>https://github.com/xykong/flux-markdown/releases/tag/v1.13.141</link>
             <sparkle:version>141</sparkle:version>
             <sparkle:shortVersionString>1.13.141</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
             <pubDate>Thu, 12 Feb 2026 16:18:52 +0000</pubDate>
             <enclosure
-                url="https://github.com/xykong/markdown-quicklook/releases/download/v1.13.141/MarkdownPreviewEnhanced.dmg"
+url="https://github.com/xykong/flux-markdown/releases/download/v1.13.141/MarkdownPreviewEnhanced.dmg"
                 sparkle:edSignature="EF/GwvLKmxpniNtCHNkhmrLUK5GdTeyFxptLZ60itGYVVKNMR3pwQFvNi/a8MFvLU6/YncgY1xQ6fYfCEOq4Dw=="
                 length="7429119"
                 type="application/octet-stream" />
@@ -102,36 +102,36 @@ Fixed
   - **用户体验**:
     - 手写目录小错误不再影响跳转
     - 不需要精确记住下划线还是连字符
-    - 容错设计，减少用户认知负担</pre><p><a href="https://github.com/xykong/markdown-quicklook/releases/tag/v1.13.141">查看完整更新日志</a></p>
+    - 容错设计，减少用户认知负担</pre><p><a href="https://github.com/xykong/flux-markdown/releases/tag/v1.13.141">查看完整更新日志</a></p>
             ]]></description>
         </item>
         
         <item>
             <title>Version 1.12.137</title>
-            <link>https://github.com/xykong/markdown-quicklook/releases/tag/v1.12.137</link>
+<link>https://github.com/xykong/flux-markdown/releases/tag/v1.12.137</link>
             <sparkle:version>137</sparkle:version>
             <sparkle:shortVersionString>1.12.137</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
             <pubDate>Wed, 11 Feb 2026 12:48:19 +0000</pubDate>
             <enclosure
-                url="https://github.com/xykong/markdown-quicklook/releases/download/v1.12.137/MarkdownPreviewEnhanced.dmg"
+url="https://github.com/xykong/flux-markdown/releases/download/v1.12.137/MarkdownPreviewEnhanced.dmg"
                 sparkle:edSignature="PiNAoPDeIvouQ9k7y9ZY7nKenxngWaCqahIsYH1dfq04ecAIcMe0VKjyj4kO1daw7sAalUvTFOqcRdohO2OxBA=="
                 length="7428647"
                 type="application/octet-stream" />
             <description><![CDATA[
-                <h2>更新内容</h2><pre></pre><p><a href="https://github.com/xykong/markdown-quicklook/releases/tag/v1.12.137">查看完整更新日志</a></p>
+                <h2>更新内容</h2><pre></pre><p><a href="https://github.com/xykong/flux-markdown/releases/tag/v1.12.137">查看完整更新日志</a></p>
             ]]></description>
         </item>
                 
         <item>
             <title>Version 1.11.130</title>
-            <link>https://github.com/xykong/markdown-quicklook/releases/tag/v1.11.130</link>
+<link>https://github.com/xykong/flux-markdown/releases/tag/v1.11.130</link>
             <sparkle:version>131</sparkle:version>
             <sparkle:shortVersionString>1.11.130</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
             <pubDate>Tue, 11 Feb 2026 11:09:00 +0000</pubDate>
             <enclosure
-                url="https://github.com/xykong/markdown-quicklook/releases/download/v1.11.130/MarkdownPreviewEnhanced.dmg"
+url="https://github.com/xykong/flux-markdown/releases/download/v1.11.130/MarkdownPreviewEnhanced.dmg"
                 sparkle:edSignature="mN7YER9FykmegvX7im5BbSL9YGUNE82eDXYG+i/OVLbaOyL5glqFYRkf85fMPhuppMdLdC7GOMtqC5smxuNJBg=="
                 length="7386706"
                 type="application/octet-stream" />
@@ -167,13 +167,13 @@ Fixed
         
         <item>
             <title>Version 1.10.127</title>
-            <link>https://github.com/xykong/markdown-quicklook/releases/tag/v1.10.127</link>
+<link>https://github.com/xykong/flux-markdown/releases/tag/v1.10.127</link>
             <sparkle:version>127</sparkle:version>
             <sparkle:shortVersionString>1.10.127</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
             <pubDate>Mon, 09 Feb 2026 16:29:41 +0000</pubDate>
             <enclosure
-                url="https://github.com/xykong/markdown-quicklook/releases/download/v1.10.127/MarkdownPreviewEnhanced.dmg"
+url="https://github.com/xykong/flux-markdown/releases/download/v1.10.127/MarkdownPreviewEnhanced.dmg"
                 sparkle:edSignature="1J1xAwMv3yhvn2c+GCEl15dIY+kDZ1d0bpz+sinG2knhiyXMKHqH1iyYOmEhRdbejOCrPpIXUVY1uk/KPESgBw=="
                 length="7366532"
                 type="application/octet-stream" />
@@ -190,13 +190,13 @@ Fixed
         
         <item>
             <title>Version 1.10.124</title>
-            <link>https://github.com/xykong/markdown-quicklook/releases/tag/v1.10.124</link>
+<link>https://github.com/xykong/flux-markdown/releases/tag/v1.10.124</link>
             <sparkle:version>124</sparkle:version>
             <sparkle:shortVersionString>1.10.124</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
             <pubDate>Mon, 09 Feb 2026 13:11:00 +0000</pubDate>
             <enclosure
-                url="https://github.com/xykong/markdown-quicklook/releases/download/v1.10.124/MarkdownPreviewEnhanced.dmg"
+url="https://github.com/xykong/flux-markdown/releases/download/v1.10.124/MarkdownPreviewEnhanced.dmg"
                 sparkle:edSignature="1jwS+0KXQWR318HC8K8RkMeWVz7ezl0waKQqIb6KH9fD7oIgIdNye2ShrKsqtxE5Xg1ozK7hhid5jZB7V+dCAw=="
                 length="7342465"
                 type="application/octet-stream" />
@@ -227,13 +227,13 @@ Fixed
         
         <item>
             <title>Version 1.10.119</title>
-            <link>https://github.com/xykong/markdown-quicklook/releases/tag/v1.10.119</link>
+<link>https://github.com/xykong/flux-markdown/releases/tag/v1.10.119</link>
             <sparkle:version>119</sparkle:version>
             <sparkle:shortVersionString>1.10.119</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
             <pubDate>Sun, 09 Feb 2026 03:51:37 +0000</pubDate>
             <enclosure
-                url="https://github.com/xykong/markdown-quicklook/releases/download/v1.10.119/MarkdownPreviewEnhanced.dmg"
+url="https://github.com/xykong/flux-markdown/releases/download/v1.10.119/MarkdownPreviewEnhanced.dmg"
                 sparkle:edSignature="7zs5iZ6fXSrWGaEHmLr5YbHsGy/fUS9oPLjd0KHkelhXB/3qOJFgWMxah1zhQwGtL4+Nti+VZgW/Vhkn88ACDw=="
                 length="7340051"
                 type="application/octet-stream" />
@@ -247,19 +247,19 @@ Fixed
                     <li><strong>修复效果</strong>: Web Content 进程数量从 30+ 降低到 1-2 个，总内存占用从 2GB+ 降低到 100-200MB</li>
                 </ul>
 
-                <p><strong>相关 Issue</strong>: <a href="https://github.com/xykong/markdown-quicklook/issues/6">#6</a></p>
+<p><strong>相关 Issue</strong>: <a href="https://github.com/xykong/flux-markdown/issues/6">#6</a></p>
             ]]></description>
         </item>
 
         <item>
             <title>Version 1.8.114</title>
-            <link>https://github.com/xykong/markdown-quicklook/releases/tag/v1.8.114</link>
+<link>https://github.com/xykong/flux-markdown/releases/tag/v1.8.114</link>
             <sparkle:version>114</sparkle:version>
             <sparkle:shortVersionString>1.8.114</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
             <pubDate>Thu, 05 Feb 2026 06:23:51 +0000</pubDate>
             <enclosure 
-                url="https://github.com/xykong/markdown-quicklook/releases/download/v1.8.114/MarkdownPreviewEnhanced.dmg"
+url="https://github.com/xykong/flux-markdown/releases/download/v1.8.114/MarkdownPreviewEnhanced.dmg"
                 sparkle:edSignature="5VxgworFFL4pMFZN4y1WK2RAy9MOheAzf9aFYWoIQaPMvIjWaywSYfXK2EhGf7ZZnLDmqWl74WNDxU+p/FACBA=="
                 length="7338577"
                 type="application/octet-stream" />
@@ -289,13 +289,13 @@ Fixed
         
         <item>
             <title>Version 1.6.102</title>
-            <link>https://github.com/xykong/markdown-quicklook/releases/tag/v1.6.102</link>
+<link>https://github.com/xykong/flux-markdown/releases/tag/v1.6.102</link>
             <sparkle:version>102</sparkle:version>
             <sparkle:shortVersionString>1.6.102</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
             <pubDate>Wed, 04 Feb 2026 02:02:00 +0800</pubDate>
             <enclosure 
-                url="https://github.com/xykong/markdown-quicklook/releases/download/v1.6.102/MarkdownPreviewEnhanced.dmg"
+url="https://github.com/xykong/flux-markdown/releases/download/v1.6.102/MarkdownPreviewEnhanced.dmg"
                 sparkle:edSignature="V7HqjuQrdaDbfUlDUyE1ttgy1cjSbr7w76uj+tSCmKIUZVQsF17FSSJB2obxfMr8LPiNbjhnUxCImurd4H4qDA=="
                 length="7290034"
                 type="application/octet-stream" />
@@ -311,13 +311,13 @@ Fixed
         
         <item>
             <title>Version 1.6.100</title>
-            <link>https://github.com/xykong/markdown-quicklook/releases/tag/v1.6.100</link>
+<link>https://github.com/xykong/flux-markdown/releases/tag/v1.6.100</link>
             <sparkle:version>100</sparkle:version>
             <sparkle:shortVersionString>1.6.100</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
             <pubDate>Wed, 04 Feb 2026 01:54:00 +0800</pubDate>
             <enclosure 
-                url="https://github.com/xykong/markdown-quicklook/releases/download/v1.6.100/MarkdownPreviewEnhanced.dmg"
+url="https://github.com/xykong/flux-markdown/releases/download/v1.6.100/MarkdownPreviewEnhanced.dmg"
                 sparkle:edSignature="FODdhq7ltEKzdS5v+zgTlnQD/ti25CTPr/fJjXNU4HfBgmgbbwsXtjkZM2ZhNzXeOTSErR/svWsyerytpdZNAA=="
                 length="7289961"
                 type="application/octet-stream" />
@@ -333,13 +333,13 @@ Fixed
         
         <item>
             <title>Version 1.6.99</title>
-            <link>https://github.com/xykong/markdown-quicklook/releases/tag/v1.6.99</link>
+<link>https://github.com/xykong/flux-markdown/releases/tag/v1.6.99</link>
             <sparkle:version>99</sparkle:version>
             <sparkle:shortVersionString>1.6.99</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
             <pubDate>Wed, 04 Feb 2026 01:45:00 +0800</pubDate>
             <enclosure 
-                url="https://github.com/xykong/markdown-quicklook/releases/download/v1.6.99/MarkdownPreviewEnhanced.dmg"
+url="https://github.com/xykong/flux-markdown/releases/download/v1.6.99/MarkdownPreviewEnhanced.dmg"
                 sparkle:edSignature="h048is5CZv6SafC4IbrMdwjEra7N7Ajos8Qi8BfQPFKkfxIPVHcLQwSSvvTZH4ccgQM0IRVcpLMgHVo77rz9Dw=="
                 length="7292396"
                 type="application/octet-stream" />
@@ -355,13 +355,13 @@ Fixed
         
         <item>
             <title>Version 1.6.96</title>
-            <link>https://github.com/xykong/markdown-quicklook/releases/tag/v1.6.96</link>
+<link>https://github.com/xykong/flux-markdown/releases/tag/v1.6.96</link>
             <sparkle:version>96</sparkle:version>
             <sparkle:shortVersionString>1.6.96</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
             <pubDate>Wed, 04 Feb 2026 01:33:00 +0800</pubDate>
             <enclosure 
-                url="https://github.com/xykong/markdown-quicklook/releases/download/v1.6.96/MarkdownPreviewEnhanced.dmg"
+url="https://github.com/xykong/flux-markdown/releases/download/v1.6.96/MarkdownPreviewEnhanced.dmg"
                 sparkle:edSignature="rt8MW/xG3PLHpxt2FcDnYu9M3qgPhBrtXhpczcYh9uiqt9EQNxLCNQSiH06egqkOWH+IxTzacVon/mZEOYv+BA=="
                 length="7289941"
                 type="application/octet-stream" />
@@ -377,13 +377,13 @@ Fixed
         
         <item>
             <title>Version 1.6.93</title>
-            <link>https://github.com/xykong/markdown-quicklook/releases/tag/v1.6.93</link>
+<link>https://github.com/xykong/flux-markdown/releases/tag/v1.6.93</link>
             <sparkle:version>93</sparkle:version>
             <sparkle:shortVersionString>1.6.93</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
             <pubDate>Tue, 03 Feb 2026 17:00:16 +0000</pubDate>
             <enclosure 
-                url="https://github.com/xykong/markdown-quicklook/releases/download/v1.6.93/MarkdownPreviewEnhanced.dmg"
+url="https://github.com/xykong/flux-markdown/releases/download/v1.6.93/MarkdownPreviewEnhanced.dmg"
                 sparkle:edSignature="hbNYXHeSGGbkfuXxPe2knjnqAxgwf4HiqrHCW/Rusf3qMcFwPfnYwIkqy0LNK4BV8GqLfXDwef1tTdLuS38LAQ=="
                 length="7289575"
                 type="application/octet-stream" />
@@ -399,13 +399,13 @@ Fixed
         
         <item>
             <title>Version 1.6.90</title>
-            <link>https://github.com/xykong/markdown-quicklook/releases/tag/v1.6.90</link>
+<link>https://github.com/xykong/flux-markdown/releases/tag/v1.6.90</link>
             <sparkle:version>90</sparkle:version>
             <sparkle:shortVersionString>1.6.90</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
             <pubDate>Mon, 03 Feb 2026 23:25:00 +0800</pubDate>
             <enclosure 
-                url="https://github.com/xykong/markdown-quicklook/releases/download/v1.6.90/MarkdownPreviewEnhanced.dmg"
+url="https://github.com/xykong/flux-markdown/releases/download/v1.6.90/MarkdownPreviewEnhanced.dmg"
                 sparkle:edSignature="dJkl2q8746f8GZLBvUFQxGndAtlmWCtnU1QlCkufJt876oNXuwd440TexH1HomcCqxdJCaK8xL2KvORSUAnGCg=="
                 length="7284896"
                 type="application/octet-stream" />

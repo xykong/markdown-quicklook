@@ -27,7 +27,7 @@ fi
 echo "🔍 Locating built application..."
 APP_PATH=""
 
-for path in ~/Library/Developer/Xcode/DerivedData/MarkdownPreviewEnhanced-*/Build/Products/"$CONFIGURATION"/"Markdown Preview Enhanced.app"; do
+for path in ~/Library/Developer/Xcode/DerivedData/FluxMarkdown-*/Build/Products/"$CONFIGURATION"/"FluxMarkdown.app"; do
     if [ -d "$path" ]; then
         if [ -z "$APP_PATH" ] || [ "$path" -nt "$APP_PATH" ]; then
             APP_PATH="$path"
@@ -37,7 +37,7 @@ done
 
 if [ -z "$APP_PATH" ]; then
     echo "❌ Error: Could not find built application in DerivedData."
-    echo "   Expected path: .../Build/Products/$CONFIGURATION/Markdown Preview Enhanced.app"
+    echo "   Expected path: .../Build/Products/$CONFIGURATION/FluxMarkdown.app"
     echo "   Please check if the build succeeded."
     exit 1
 fi
@@ -45,16 +45,16 @@ fi
 echo "📋 Found app at: $APP_PATH"
 echo "📋 Configuration: $CONFIGURATION"
 echo "📋 Installing to /Applications..."
-rm -rf "/Applications/Markdown Preview Enhanced.app"
+rm -rf "/Applications/FluxMarkdown.app"
 cp -R "$APP_PATH" /Applications/
 
 # 3. Remove quarantine attribute
 echo "🔓 Removing quarantine attribute..."
-/usr/bin/xattr -cr "/Applications/Markdown Preview Enhanced.app"
+/usr/bin/xattr -cr "/Applications/FluxMarkdown.app"
 
 # 4. Register with LaunchServices
 echo "🔧 Registering with system..."
-/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -f "/Applications/Markdown Preview Enhanced.app"
+/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -f "/Applications/FluxMarkdown.app"
 
 # 5. Reset QuickLook cache (before launching app)
 echo "🔄 Resetting QuickLook cache..."
@@ -62,7 +62,7 @@ qlmanage -r
 
 # 6. Launch app once to complete system registration
 echo "🚀 Launching application to complete registration..."
-open -g "/Applications/Markdown Preview Enhanced.app" --args --register-only
+open -g "/Applications/FluxMarkdown.app" --args --register-only
 sleep 2
 
 # 7. Set as default handler for .md files
@@ -105,7 +105,7 @@ echo "════════════════════════�
 echo "  ✅ Installation Complete - $CONFIGURATION Configuration"
 echo "════════════════════════════════════════════════════════════════"
 echo ""
-echo "🎉 Markdown Preview Enhanced has been automatically configured!"
+echo "🎉 FluxMarkdown has been automatically configured!"
 echo ""
 echo "📋 What was done:"
 echo "   ✓ Application installed to /Applications"

@@ -271,7 +271,7 @@ if imagePath.starts(with: "file://") {
 首次打开包含图片的 Markdown 文件时，macOS 会显示权限对话框：
 
 ```
-"Markdown Preview Enhanced.app" would like to 
+"FluxMarkdown.app" would like to
 access files in your home folder.
 
 Keeping app data separate makes it easier to 

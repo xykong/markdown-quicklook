@@ -45,7 +45,7 @@
 
 1. **直接用主 APP 打开**
    ```bash
-   open -a "Markdown Preview Enhanced" tests/test-link-navigation.md
+open -a "FluxMarkdown" tests/test-link-navigation.md
    ```
 
 2. **点击各种链接**：

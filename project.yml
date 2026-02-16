@@ -1,4 +1,4 @@
-name: MarkdownPreviewEnhanced
+name: FluxMarkdown
 options:
   bundleIdPrefix: com.xykong
   deploymentTarget:
@@ -19,7 +19,7 @@ targets:
         type: folder
     settings:
       ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
-      PRODUCT_NAME: "Markdown Preview Enhanced"
+      PRODUCT_NAME: "FluxMarkdown"
       PRODUCT_BUNDLE_IDENTIFIER: com.xykong.Markdown
       INFOPLIST_FILE: Sources/Markdown/Info.plist
       INFOPLIST_KEY_NSMainStoryboardFile: ""

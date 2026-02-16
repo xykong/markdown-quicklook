@@ -84,8 +84,8 @@ echo "   Date:    $PUB_DATE"
 echo "   Signature: ${ED_SIGNATURE:0:50}..."
 echo ""
 
-DOWNLOAD_URL="https://github.com/xykong/markdown-quicklook/releases/download/v$FULL_VERSION/MarkdownPreviewEnhanced.dmg"
-RELEASE_URL="https://github.com/xykong/markdown-quicklook/releases/tag/v$FULL_VERSION"
+DOWNLOAD_URL="https://github.com/xykong/flux-markdown/releases/download/v$FULL_VERSION/FluxMarkdown.dmg"
+RELEASE_URL="https://github.com/xykong/flux-markdown/releases/tag/v$FULL_VERSION"
 
 # Extract changelog from CHANGELOG.md for this version
 CHANGELOG_FILE="$PROJECT_ROOT/CHANGELOG.md"

@@ -87,7 +87,7 @@ Add to \`Sources/Markdown/Info.plist\`:
 Use with \`sign_update\` tool when releasing:
 
 \`\`\`bash
-./sign_update build/MarkdownPreviewEnhanced.dmg .sparkle-keys/sparkle_private_key.pem
+./sign_update build/FluxMarkdown.dmg .sparkle-keys/sparkle_private_key.pem
 \`\`\`
 
 ## Security

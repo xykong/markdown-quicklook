@@ -1,10 +1,10 @@
 #!/bin/bash
 set -e
 
-APP_NAME="Markdown Preview Enhanced"
+APP_NAME="FluxMarkdown"
 APP_BUNDLE="${APP_NAME}.app"
-BUILD_DIR="${HOME}/Library/Developer/Xcode/DerivedData/MarkdownPreviewEnhanced-*"
-DMG_NAME="MarkdownPreviewEnhanced.dmg"
+BUILD_DIR="${HOME}/Library/Developer/Xcode/DerivedData/FluxMarkdown-*"
+DMG_NAME="FluxMarkdown.dmg"
 OUTPUT_DIR="build/artifacts"
 
 echo "🚀 Starting DMG creation for ${APP_NAME}..."

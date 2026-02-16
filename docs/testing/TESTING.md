@@ -202,7 +202,7 @@ qlmanage -r cache
 4. Use mouse wheel zoom (CMD + scroll) or pinch gesture as alternative
 
 ### No log output?
-- Make sure the app is installed: `/Applications/Markdown Preview Enhanced.app`
+- Make sure the app is installed: `/Applications/FluxMarkdown.app`
 - Check if the process is running: `ps aux | grep MarkdownPreview`
 
 ### Still not working?

@@ -1,4 +1,4 @@
-# Markdown Preview Enhanced for macOS QuickLook
+# FluxMarkdown
 
 [中文 README](README_ZH.md)
 
@@ -29,21 +29,21 @@ A macOS QuickLook extension to beautifully preview Markdown files with full rend
 
 ```bash
 brew tap xykong/tap
-brew install --cask markdown-preview-enhanced
+brew install --cask flux-markdown
 ```
 
 #### Method 2: Manual Installation (DMG)
 
-1. Download the latest `.dmg` from the [Releases](https://github.com/xykong/markdown-quicklook/releases) page.
+1. Download the latest `.dmg` from the [Releases](https://github.com/xykong/flux-markdown/releases) page.
 2. Open the `.dmg` file.
-3. Drag **Markdown Preview Enhanced.app** to your **Applications** folder.
+3. Drag **FluxMarkdown.app** to your **Applications** folder.
 
 #### Method 3: Build from Source (For Developers)
 
 ```bash
 # Clone the repository
-git clone https://github.com/xykong/markdown-quicklook.git
-cd markdown-quicklook
+git clone https://github.com/xykong/flux-markdown.git
+cd flux-markdown
 
 # Build and Install (Release version)
 make install
@@ -54,7 +54,7 @@ make install debug
 
 This command will automatically:
 1. Build the application with all dependencies
-2. Install it to `/Applications/Markdown Preview Enhanced.app`
+2. Install it to `/Applications/FluxMarkdown.app`
 3. Register it with the system
 4. Launch the app to complete registration
 5. Set as default handler for `.md` files
@@ -64,21 +64,21 @@ This command will automatically:
 
 ### 🛑 Troubleshooting: "App is damaged" or "Unidentified Developer"
 
-Since this app is open-source and not notarized by Apple, you might see an error saying **"Markdown Preview Enhanced.app is damaged and can't be opened"** or **"cannot be opened because the developer cannot be verified"**.
+Since this app is open-source and not notarized by Apple, you might see an error saying **"FluxMarkdown.app is damaged and can't be opened"** or **"cannot be opened because the developer cannot be verified"**.
 
 **Option 1: Command Line (Recommended)**
 
 Run the following command in Terminal to remove the quarantine attribute:
 
 ```bash
-xattr -cr "/Applications/Markdown Preview Enhanced.app"
+xattr -cr "/Applications/FluxMarkdown.app"
 ```
 
 **Option 2: Manual Authorization**
 
 1. Go to **System Settings** > **Privacy & Security**.
 2. Scroll down to the **Security** section.
-3. You should see a message saying "Markdown Preview Enhanced.app was blocked...".
+3. You should see a message saying "FluxMarkdown.app was blocked...".
 4. Click **Open Anyway**.
 5. Enter your password to confirm.
 
@@ -89,7 +89,7 @@ Then try opening the app again.
 **When you first preview a Markdown file with images**, macOS will show a permission dialog:
 
 ```
-"Markdown Preview Enhanced.app" would like to 
+"FluxMarkdown.app" would like to 
 access files in your home folder.
 
 Keeping app data separate makes it easier to 
@@ -134,7 +134,7 @@ Or simply select any `.md` file in Finder and press Space (QuickLook shortcut).
 1. Make sure you clicked **"Allow"** (not "Don't Allow") in the permission dialog
 2. If you accidentally clicked "Don't Allow", you need to reset the permission:
    - Open **System Settings** > **Privacy & Security** > **Files and Folders**
-   - Look for "Markdown Preview Enhanced"
+    - Look for "FluxMarkdown"
    - Enable access to your home folder
 3. Alternatively, completely reset permissions:
    ```bash
@@ -182,7 +182,7 @@ Or simply select any `.md` file in Finder and press Space (QuickLook shortcut).
 
 2. Set as default handler manually:
    - Right-click on a `.md` file → **Get Info**
-   - Under "Open with:", select **Markdown Preview Enhanced**
+    - Under "Open with:", select **FluxMarkdown**
    - Click **Change All...**
 
 3. Log out and log back in (or restart your Mac)
@@ -191,7 +191,7 @@ Or simply select any `.md` file in Finder and press Space (QuickLook shortcut).
 
 **To view current permissions:**
 - **System Settings** > **Privacy & Security** > **Files and Folders**
-- Look for "Markdown Preview Enhanced"
+- Look for "FluxMarkdown"
 
 **To revoke permissions:**
 - Toggle off the permission switch

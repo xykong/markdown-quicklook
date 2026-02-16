@@ -12,7 +12,7 @@ if [[ ! $REPLY =~ ^[Yy]$ ]]; then
     exit 0
 fi
 
-APP_PATH="/Applications/Markdown Preview Enhanced.app"
+APP_PATH="/Applications/FluxMarkdown.app"
 INFO_PLIST="$APP_PATH/Contents/Info.plist"
 
 if [ ! -d "$APP_PATH" ]; then
@@ -40,7 +40,7 @@ echo "════════════════════════�
 echo "  🧪 开始测试"
 echo "════════════════════════════════════════════════════════════════"
 echo ""
-echo "1. 打开 'Markdown Preview Enhanced' 应用"
+echo "1. 打开 'FluxMarkdown' 应用"
 echo "2. 点击 '检查更新...' 或按 ⌘U"
 echo "3. 应该检测到 v1.6.93"
 echo "4. 点击 'Install' 按钮"

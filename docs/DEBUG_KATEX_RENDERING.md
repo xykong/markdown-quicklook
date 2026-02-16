@@ -10,7 +10,7 @@ Formulas in `tests/fixtures/test-sample.md` are rendering incorrectly. Character
 - Webpack config was updated to handle fonts inline (`asset/inline`), which solved missing font files issue, but the rendering is still broken.
 
 ### 2. Reference Project Comparison
-- `markdown-preview-enhanced` (MPE) works correctly.
+- `markdown-preview-enhanced` (MPE) works correctly (reference project).
 - MPE uses `@shd101wyy/mume` which handles rendering.
 - `markdown-quicklook` uses `markdown-it-katex` version `^2.0.3` (which is quite old) with a forced override to `katex` `^0.16.27`.
 

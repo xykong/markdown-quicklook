@@ -2,8 +2,8 @@
 set -e
 
 VERSION_FILE=".version"
-DMG_PATH="build/artifacts/MarkdownPreviewEnhanced.dmg"
-CASK_FILE="../homebrew-tap/Casks/markdown-preview-enhanced.rb"
+DMG_PATH="build/artifacts/FluxMarkdown.dmg"
+CASK_FILE="../homebrew-tap/Casks/flux-markdown.rb"
 
 if [ ! -f "$VERSION_FILE" ]; then
     echo "❌ Error: Version file not found: $VERSION_FILE"
@@ -60,7 +60,7 @@ if ! grep -q "auto_updates true" "$CASK_FILE"; then
   auto_updates true\\
 \\
   livecheck do\\
-    url \"https://xykong.github.io/markdown-quicklook/appcast.xml\"\\
+    url \"https://raw.githubusercontent.com/xykong/flux-markdown/master/appcast.xml\"\\
     strategy :sparkle, \&:short_version\\
   end
 " "$CASK_FILE"
@@ -71,24 +71,24 @@ echo ""
 
 cd "$(dirname "$CASK_FILE")/.."
 
-if ! git diff --quiet Casks/markdown-preview-enhanced.rb; then
+if ! git diff --quiet Casks/flux-markdown.rb; then
     echo "📝 Changes detected:"
-    git diff Casks/markdown-preview-enhanced.rb
+    git diff Casks/flux-markdown.rb
     echo ""
     
     read -p "👉 Commit and push changes? (y/n) " -n 1 -r
     echo ""
     
     if [[ $REPLY =~ ^[Yy]$ ]]; then
-        git add Casks/markdown-preview-enhanced.rb
-        git commit -m "chore(cask): update markdown-preview-enhanced to v$VERSION"
+        git add Casks/flux-markdown.rb
+        git commit -m "chore(cask): update flux-markdown to v$VERSION"
         git push origin master
         echo "✅ Changes committed and pushed to homebrew-tap"
     else
         echo "⚠️  Changes not committed. Please commit manually:"
         echo "   cd $(pwd)"
-        echo "   git add Casks/markdown-preview-enhanced.rb"
-        echo "   git commit -m 'chore(cask): update markdown-preview-enhanced to v$VERSION'"
+        echo "   git add Casks/flux-markdown.rb"
+        echo "   git commit -m 'chore(cask): update flux-markdown to v$VERSION'"
         echo "   git push origin master"
     fi
 else
@@ -98,4 +98,4 @@ fi
 echo ""
 echo "🎉 Done! Users can now install v$VERSION with:"
 echo "   brew update"
-echo "   brew upgrade markdown-preview-enhanced"
+echo "   brew upgrade flux-markdown"

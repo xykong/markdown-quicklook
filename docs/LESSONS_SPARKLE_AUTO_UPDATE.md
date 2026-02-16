@@ -199,11 +199,11 @@ curl -L -o old.dmg https://github.com/.../v1.6.96/...
 
 # 2. 安装旧版本
 hdiutil attach old.dmg
-cp -R "Markdown Preview Enhanced.app" /Applications/
+cp -R "FluxMarkdown.app" /Applications/
 hdiutil detach
 
 # 3. 测试更新到新版本
-open "/Applications/Markdown Preview Enhanced.app"
+open "/Applications/FluxMarkdown.app"
 # 点击 "Check for Updates"
 ```
 

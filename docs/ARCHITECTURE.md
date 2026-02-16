@@ -3,6 +3,8 @@
 ## 1. Project Goal
 To create a high-fidelity **macOS Quick Look (QuickView) Extension** for Markdown files that replicates the rendering experience of the "Markdown Preview Enhanced" (MPE) VS Code plugin.
 
+Note: This macOS app is named **FluxMarkdown**. The mention of "Markdown Preview Enhanced (MPE)" refers to the VS Code plugin this project was inspired by.
+
 ## 2. Design Decisions & Trade-offs
 
 ### 2.1 The "Hybrid" Architecture

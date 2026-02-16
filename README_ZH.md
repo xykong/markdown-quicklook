@@ -1,4 +1,4 @@
-# Markdown Preview Enhanced for macOS QuickLook 扩展
+# FluxMarkdown
 
 [English README](README.md)
 
@@ -26,21 +26,21 @@ macOS QuickLook 扩展，用于精美预览 Markdown 文件，支持完整渲染
 
 ```bash
 brew tap xykong/tap
-brew install --cask markdown-preview-enhanced
+brew install --cask flux-markdown
 ```
 
 #### 方法 2: 手动安装 (DMG)
 
-1. 从 [Releases](https://github.com/xykong/markdown-quicklook/releases) 页面下载最新的 `.dmg` 文件。
+1. 从 [Releases](https://github.com/xykong/flux-markdown/releases) 页面下载最新的 `.dmg` 文件。
 2. 打开 `.dmg` 文件。
-3. 将 **Markdown Preview Enhanced.app** 拖入 **Applications** (应用程序) 文件夹。
+3. 将 **FluxMarkdown.app** 拖入 **Applications** (应用程序) 文件夹。
 
 #### 方法 3: 源码构建 (开发者)
 
 ```bash
 # 克隆仓库
-git clone https://github.com/xykong/markdown-quicklook.git
-cd markdown-quicklook
+git clone https://github.com/xykong/flux-markdown.git
+cd flux-markdown
 
 # 构建并安装 (Release 版本)
 make install
@@ -51,7 +51,7 @@ make install debug
 
 这将自动执行以下操作：
 1. 构建包含所有依赖的应用程序
-2. 将其安装到 `/Applications/Markdown Preview Enhanced.app`
+2. 将其安装到 `/Applications/FluxMarkdown.app`
 3. 向系统注册应用
 4. 启动应用完成注册
 5. 设置为 `.md` 文件的默认处理程序
@@ -61,21 +61,21 @@ make install debug
 
 ### 🛑 常见问题："应用已损坏" 或 "无法验证开发者"
 
-由于本项目是开源软件，未购买 Apple 开发者证书进行公证，首次运行时 macOS Gatekeeper 可能会提示 **“Markdown Preview Enhanced.app 已损坏，无法打开”** 或 **“无法验证开发者”**。
+由于本项目是开源软件，未购买 Apple 开发者证书进行公证，首次运行时 macOS Gatekeeper 可能会提示 **“FluxMarkdown.app 已损坏，无法打开”** 或 **“无法验证开发者”**。
 
 **方法 1: 命令行修复 (推荐)**
 
 在终端 (Terminal) 中运行以下命令以移除隔离属性：
 
 ```bash
-xattr -cr "/Applications/Markdown Preview Enhanced.app"
+xattr -cr "/Applications/FluxMarkdown.app"
 ```
 
 **方法 2: 手动授权**
 
 1. 打开 **系统设置 (System Settings)** > **隐私与安全性 (Privacy & Security)**。
 2. 向下滚动到 **安全性 (Security)** 部分。
-3. 你应该会看到提示 "Markdown Preview Enhanced.app 已被阻止使用..."。
+3. 你应该会看到提示 "FluxMarkdown.app 已被阻止使用..."。
 4. 点击 **仍要打开 (Open Anyway)**。
 5. 输入密码确认。
 
@@ -86,7 +86,7 @@ xattr -cr "/Applications/Markdown Preview Enhanced.app"
 **当你首次预览包含图片的 Markdown 文件时**，macOS 会显示权限对话框：
 
 ```
-"Markdown Preview Enhanced.app"想要
+"FluxMarkdown.app"想要
 访问您主文件夹中的文件。
 
 将应用数据分开存放可让您更轻松地
@@ -131,7 +131,7 @@ qlmanage -p tests/fixtures/test-sample.md
 1. 确保点击的是 **"允许"**（而不是"不允许"）
 2. 如果不小心点了"不允许"，需要重置权限：
    - 打开 **系统设置** > **隐私与安全性** > **文件和文件夹**
-   - 找到 "Markdown Preview Enhanced"
+   - 找到 "FluxMarkdown"
    - 启用对主文件夹的访问权限
 3. 或者完全重置权限：
    ```bash
@@ -179,7 +179,7 @@ qlmanage -p tests/fixtures/test-sample.md
 
 2. 手动设置默认处理程序：
    - 右键点击 `.md` 文件 → **显示简介**
-   - 在"打开方式"下拉框中选择 **Markdown Preview Enhanced**
+   - 在"打开方式"下拉框中选择 **FluxMarkdown**
    - 点击 **全部更改...**
 
 3. 注销并重新登录（或重启 Mac）
@@ -188,7 +188,7 @@ qlmanage -p tests/fixtures/test-sample.md
 
 **查看当前权限：**
 - **系统设置** > **隐私与安全性** > **文件和文件夹**
-- 找到 "Markdown Preview Enhanced"
+- 找到 "FluxMarkdown"
 
 **撤销权限：**
 - 关闭权限开关

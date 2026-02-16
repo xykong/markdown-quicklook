@@ -3,7 +3,7 @@ set -e
 
 VERSION_FILE=".version"
 CHANGELOG_FILE="CHANGELOG.md"
-DMG_PATH="build/artifacts/MarkdownPreviewEnhanced.dmg"
+DMG_PATH="build/artifacts/FluxMarkdown.dmg"
 
 if ! command -v gh &> /dev/null; then
     echo "❌ Error: 'gh' (GitHub CLI) is not installed."
@@ -178,4 +178,4 @@ echo "   ✅ DMG uploaded"
 echo "   ✅ Sparkle appcast updated (if configured)"
 echo "   ✅ Homebrew Cask updated (if configured)"
 echo ""
-echo "🌐 Release URL: https://github.com/xykong/markdown-quicklook/releases/tag/v$NEW_FULL_VERSION"
+echo "🌐 Release URL: https://github.com/xykong/flux-markdown/releases/tag/v$NEW_FULL_VERSION"

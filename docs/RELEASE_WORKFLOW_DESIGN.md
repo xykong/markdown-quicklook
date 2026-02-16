@@ -114,7 +114,7 @@ git checkout master  # return to master
 
 ```bash
 # appcast.xml must be generated BEFORE committing
-./scripts/generate-appcast.sh build/artifacts/MarkdownPreviewEnhanced.dmg
+./scripts/generate-appcast.sh build/artifacts/FluxMarkdown.dmg
 
 # Then include it in the release commit
 git add appcast.xml

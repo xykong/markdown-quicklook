@@ -28,7 +28,7 @@ macOS QuickLook extension for Markdown files. Hybrid architecture: Native Swift 
 | **Rendering** | `web-renderer/src/index.ts` | Markdown parsing (see subdir AGENTS.md). |
 | **Rules** | `.clinerules` | TDD & Doc-first requirements. |
 | **Release Process** | `docs/RELEASE_PROCESS.md` | Complete PR handling and release workflow. |
-| **Homebrew Cask** | `../homebrew-tap/Casks/markdown-preview-enhanced.rb` | Update version & SHA256 after each release. |
+| **Homebrew Cask** | `../homebrew-tap/Casks/flux-markdown.rb` | Update version & SHA256 after each release. |
 
 ## ARCHITECTURE & PATTERNS
 - **Hybrid Bridge**: Swift loads `index.html`, calls `window.renderMarkdown(content)`. JS logs back via `window.webkit.messageHandlers.logger`.
@@ -40,7 +40,7 @@ macOS QuickLook extension for Markdown files. Hybrid architecture: Native Swift 
   2. **Release**: Run `make release [major|minor|patch]` → Updates `.version`, `CHANGELOG.md`, builds DMG, creates GitHub release.
   3. **Homebrew**: Run `./scripts/update-homebrew-cask.sh <VERSION>` to update Homebrew Cask automatically.
   4. See `docs/RELEASE_PROCESS.md` for complete workflow.
-- **Homebrew Distribution**: After release, run `./scripts/update-homebrew-cask.sh <VERSION>` or manually update `../homebrew-tap/Casks/markdown-preview-enhanced.rb`.
+- **Homebrew Distribution**: After release, run `./scripts/update-homebrew-cask.sh <VERSION>` or manually update `../homebrew-tap/Casks/flux-markdown.rb`.
 
 ## CONVENTIONS
 - **TDD**: Write tests/metrics *before* implementation (see `.clinerules`).
