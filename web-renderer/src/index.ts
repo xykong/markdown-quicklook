@@ -142,7 +142,7 @@ try {
     
     const originalValidateLink = md.validateLink.bind(md);
     md.validateLink = function(url: string): boolean {
-        if (url.startsWith('data:')) {
+        if (url.startsWith('data:') || url.startsWith('local-md://')) {
             return true;
         }
         return originalValidateLink(url);
@@ -170,29 +170,17 @@ try {
         const srcIndex = token.attrIndex('src');
         if (srcIndex >= 0) {
             const originalSrc = token.attrs[srcIndex][1];
-            logToSwift(`[Image] Original src: "${originalSrc}"`);
-            
             const isNetworkUrl = /^(http:\/\/|https:\/\/)/.test(originalSrc);
             const isEmbeddedBase64Image = originalSrc.startsWith('data:');
-            const isLocalFile = !isNetworkUrl && !isEmbeddedBase64Image;
-            
-            logToSwift(`[Image] Type: ${isEmbeddedBase64Image ? 'embedded-base64' : isNetworkUrl ? 'network' : 'local-file'}, has imageData: ${!!env?.imageData}`);
-            
-            if (isEmbeddedBase64Image) {
-                logToSwift(`[Image] Keeping embedded base64: "${originalSrc.substring(0, 50)}..."`);
-            } else if (isLocalFile && env?.imageData) {
-                const base64DataUrl = env.imageData[originalSrc];
-                if (base64DataUrl) {
-                    token.attrs[srcIndex][1] = base64DataUrl;
-                    logToSwift(`[Image] Replaced with base64 data for: "${originalSrc}"`);
-                } else {
-                    logToSwift(`[Image] No base64 data found for: "${originalSrc}"`);
-                    if (env.imageData) {
-                        logToSwift(`[Image] Available keys: ${Object.keys(env.imageData).join(', ')}`);
-                    }
-                }
-            } else if (isNetworkUrl) {
-                logToSwift(`[Image] Keeping network URL: "${originalSrc}"`);
+            const isLocalFile = !isNetworkUrl && !isEmbeddedBase64Image && !originalSrc.startsWith('local-md://');
+
+            if (isLocalFile && env?.baseUrl) {
+                const basePath = env.baseUrl.replace(/\/$/, '');
+                const absolutePath = originalSrc.startsWith('/')
+                    ? originalSrc
+                    : `${basePath}/${originalSrc}`;
+                token.attrs[srcIndex][1] = `local-md://${absolutePath}`;
+                logToSwift(`[Image] Resolved to scheme URL: "${token.attrs[srcIndex][1]}"`);
             }
         }
         return defaultImageRender(tokens, idx, options, env, self);
@@ -210,7 +198,7 @@ let mermaidCurrentTheme: string | null = null;
 
 declare global {
     interface Window {
-        renderMarkdown: (text: string, options?: { baseUrl?: string, theme?: string, imageData?: Record<string, string> }) => Promise<void>;
+        renderMarkdown: (text: string, options?: { baseUrl?: string, theme?: string }) => Promise<void>;
         renderSource: (text: string, theme: string) => void;
         setZoomLevel: (level: number) => void;
         showSearch: () => void;
@@ -219,7 +207,7 @@ declare global {
     }
 }
 
-window.renderMarkdown = async function (text: string, options: { baseUrl?: string, theme?: string, imageData?: Record<string, string> } = {}) {
+window.renderMarkdown = async function (text: string, options: { baseUrl?: string, theme?: string } = {}) {
     const outputDiv = document.getElementById('markdown-preview');
     const loadingDiv = document.getElementById('loading-status');
     
@@ -275,60 +263,7 @@ window.renderMarkdown = async function (text: string, options: { baseUrl?: strin
             toc.render(outline);
         }
 
-        let html = md.render(text, { baseUrl: options.baseUrl, imageData: options.imageData });
-        
-        logToSwift(`[Render] Generated HTML length: ${html.length}`);
-        if (html.includes('data:image')) {
-            const snippet = html.match(/<img[^>]*data:image[^>]*>/g);
-            if (snippet) {
-                logToSwift(`[Render] Sample img tags with data:image: ${snippet.length} found`);
-                snippet.forEach((s, i) => {
-                    logToSwift(`[Render]   ${i + 1}. ${s.substring(0, 120)}...`);
-                });
-            }
-        }
-        if (html.includes('data:image')) {
-            logToSwift('[Render] HTML contains Base64 images - converting to blob URLs');
-            const imgMatches = html.match(/<img[^>]+src="(data:image\/[^"]+)"/g);
-            if (imgMatches) {
-                logToSwift(`[Render] Found ${imgMatches.length} Base64 img tags`);
-                imgMatches.forEach((match, index) => {
-                    logToSwift(`[Render] Processing match ${index + 1}: ${match.substring(0, 100)}...`);
-                    const dataUrlMatch = match.match(/src="(data:image\/([^;]+);base64,([^"]+))"/);
-                    if (dataUrlMatch) {
-                        const [, dataUrl, mimeType, base64Data] = dataUrlMatch;
-                        logToSwift(`[Render] Extracted - MIME: ${mimeType}, Base64 length: ${base64Data.length}`);
-                        try {
-                            logToSwift(`[Render] Decoding Base64 (${base64Data.length} chars)...`);
-                            const binaryString = atob(base64Data);
-                            logToSwift(`[Render] Decoded to binary (${binaryString.length} bytes)`);
-                            const bytes = new Uint8Array(binaryString.length);
-                            for (let i = 0; i < binaryString.length; i++) {
-                                bytes[i] = binaryString.charCodeAt(i);
-                            }
-                            logToSwift(`[Render] Creating blob with MIME: image/${mimeType}`);
-                            const blob = new Blob([bytes], { type: `image/${mimeType}` });
-                            logToSwift(`[Render] Blob created: ${blob.size} bytes, type: ${blob.type}`);
-                            const blobUrl = URL.createObjectURL(blob);
-                            logToSwift(`[Render] Blob URL created: ${blobUrl}`);
-                            const beforeReplace = html.includes(dataUrl);
-                            html = html.replace(dataUrl, blobUrl);
-                            const afterReplace = html.includes(blobUrl);
-                            logToSwift(`[Render] Replacement: before=${beforeReplace}, after=${afterReplace}`);
-                            logToSwift(`[Render] ✅ Converted to blob: ${blobUrl}`);
-                        } catch (e) {
-                            logToSwift(`[Render] ❌ Conversion failed: ${e}`);
-                        }
-                    } else {
-                        logToSwift(`[Render] ❌ Regex didn't match for: ${match.substring(0, 100)}...`);
-                    }
-                });
-            } else {
-                logToSwift('[Render] ❌ No img tags found with regex');
-            }
-        } else {
-            logToSwift('[Render] No data:image URLs in HTML');
-        }
+        let html = md.render(text, { baseUrl: options.baseUrl });
 
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = html;

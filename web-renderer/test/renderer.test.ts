@@ -54,18 +54,15 @@ invalid syntax here
     expect(errorDiv?.textContent).toContain('Parse error on line 1');
   });
 
-  test('should replace relative image paths with base64 data from imageData', async () => {
+  test('should resolve relative image paths to local-md:// scheme URLs', async () => {
     const markdown = '![img](./pic.png)';
-    const imageData = {
-      './pic.png': 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=='
-    };
-    
-    await window.renderMarkdown(markdown, { baseUrl: '/Users/me/docs', imageData });
+
+    await window.renderMarkdown(markdown, { baseUrl: '/Users/me/docs' });
 
     const preview = document.getElementById('markdown-preview');
     const img = preview?.querySelector('img');
     expect(img).toBeTruthy();
-    expect(img?.getAttribute('src')).toBe(imageData['./pic.png']);
+    expect(img?.getAttribute('src')).toBe('local-md:///Users/me/docs/pic.png');
   });
 
   test('should preserve embedded base64 images without modification', async () => {
@@ -96,26 +93,21 @@ invalid syntax here
   test('should handle multiple image types in the same document', async () => {
     const base64Data = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
     const networkUrl = 'https://example.com/image.png';
-    const localImageData = 'data:image/jpeg;base64,/9j/4AAQSkZJRg==';
-    
+
     const markdown = `
 ![Base64](${base64Data})
 ![Network](${networkUrl})
 ![Local](./local.jpg)
     `;
-    
-    const imageData = {
-      './local.jpg': localImageData
-    };
-    
-    await window.renderMarkdown(markdown, { imageData });
+
+    await window.renderMarkdown(markdown, { baseUrl: '/Users/me/docs' });
 
     const preview = document.getElementById('markdown-preview');
     const images = preview?.querySelectorAll('img');
-    
+
     expect(images?.length).toBe(3);
     expect(images?.[0].getAttribute('src')).toBe(base64Data);
     expect(images?.[1].getAttribute('src')).toBe(networkUrl);
-    expect(images?.[2].getAttribute('src')).toBe(localImageData);
+    expect(images?.[2].getAttribute('src')).toBe('local-md:///Users/me/docs/local.jpg');
   });
 });

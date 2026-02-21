@@ -72,6 +72,7 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
     var isWebViewLoaded = false
     var currentZoomLevel: Double = 1.0
     var currentViewMode: ViewMode = .preview
+    var localSchemeHandler: LocalSchemeHandler?
     
     // MARK: - Process Pool Management
     
@@ -301,6 +302,10 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
         userContentController.add(self, name: "logger")
         userContentController.add(self, name: "linkClicked")
         webConfiguration.userContentController = userContentController
+        
+        let schemeHandler = LocalSchemeHandler()
+        webConfiguration.setURLSchemeHandler(schemeHandler, forURLScheme: "local-md")
+        localSchemeHandler = schemeHandler
         
         os_log("🔵 initializing InteractiveWebView instance...", log: logger, type: .default)
         webView = InteractiveWebView(frame: self.view.bounds, configuration: webConfiguration)
@@ -954,13 +959,16 @@ public class PreviewViewController: NSViewController, QLPreviewingController, WK
         
         let capturedURL = self.currentURL
         
+        if let url = capturedURL {
+            localSchemeHandler?.baseDirectory = url.deletingLastPathComponent()
+        }
+        
         Task.detached(priority: .userInitiated) { [weak self] in
             guard let self = self else { return }
             
             var options: [String: Any] = ["theme": theme]
             if let url = capturedURL {
                 options["baseUrl"] = url.deletingLastPathComponent().path
-                options["imageData"] = self.collectImageData(from: url, content: content)
             }
             
             guard let optionsData = try? JSONSerialization.data(withJSONObject: options, options: []),
