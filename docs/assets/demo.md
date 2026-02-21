@@ -100,8 +100,7 @@ print("\(FluxMarkdown().name) - Ready in Finder")
 ### Shell
 
 ```bash
-brew tap xykong/tap
-brew install --cask flux-markdown
+brew install --cask xykong/tap/flux-markdown
 
 # Refresh QuickLook cache
 qlmanage -r

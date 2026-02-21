@@ -48,8 +48,7 @@
 ### Homebrew（推荐）
 
 ```bash
-brew tap xykong/tap
-brew install --cask flux-markdown
+brew install --cask xykong/tap/flux-markdown
 ```
 
 ### 手动安装（DMG）
