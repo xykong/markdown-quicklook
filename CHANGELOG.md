@@ -14,6 +14,24 @@
   - 新增 `docs/BENCHMARK_BASELINE.md` - 完整基线测试报告文档
   - 记录了优化前的性能基线数据，为后续优化提供量化对比基准
 
+### Changed
+- **重大性能优化 (7项)**:
+  - **P0 Bundle 拆分**: 移除 `vite-plugin-singlefile`，改用标准多文件输出 + `loadFileURL`
+    - `index.html` 从 5.5 MB 降至 1.84 KB (-99.97%)
+    - Swift 侧从 `loadHTMLString()` 改为 `loadFileURL(_:allowingReadAccessTo:)`
+  - **P1-A highlight.js Tree-shaking**: 全量导入改为 `highlight.js/core` + 按需注册 24 种语言
+    - hljs 贡献从 ~400 KB 降至 ~80 KB (-80%)
+  - **P1-B Mermaid 单例化**: `mermaid.initialize()` 改为仅主题变化时调用
+    - mermaid 热渲染从 ~186ms 降至 ~46ms (-75%)
+  - **P2-A 图片 I/O 异步化**: `collectImageData()` 移至后台 `Task.detached`
+    - 消除主线程图片 I/O 阻塞
+  - **P2-B LocalSchemeHandler 启用**: 注册已实现未启用的 `local-md://` scheme handler
+    - 删除 ~50 行 base64→Blob 转换代码，图片改为按需加载
+  - **KaTeX 懒加载**: 改为按需动态 import，仅含公式文档加载
+    - `index.js` 从 554 KB 降至 317 KB (-43%)
+  - **Mermaid 预热**: 渲染后空闲时刻预热 mermaid chunk
+    - 同会话二次打开 mermaid 文档从 ~380ms 降至 ~20ms
+
 ## [1.14.164] - 2026-02-18
 
 ### Changed
