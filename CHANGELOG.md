@@ -1,9 +1,6 @@
 # Changelog
 
 ## [Unreleased]
-_无待发布的变更_
-
-## [1.16.166] - 2026-02-23
 
 ### Added
 - **YAML Frontmatter 支持**: 自动解析文档头部的 YAML 元数据，以表格形式美观展示
