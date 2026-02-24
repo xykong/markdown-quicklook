@@ -262,7 +262,7 @@ echo "Public Key: $(cat .sparkle-keys/sparkle_public_key.txt)" >> .sparkle-keys/
 ### 原则 2：文档驱动调试
 
 **每次遇到难题时**：
-1. 创建 `docs/DEBUG_XXX.md`
+1. 创建 `docs/debug/DEBUG_XXX.md`
 2. 记录问题现象、假设、尝试、结果
 3. 最终方案落地到文档
 

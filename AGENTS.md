@@ -63,7 +63,7 @@ macOS QuickLook extension for Markdown files. Hybrid architecture: Native Swift 
 
 ## CONVENTIONS
 - **TDD**: Write tests/metrics *before* implementation (see `.clinerules`).
-- **Docs**: Create `docs/DEBUG_*.md` for hard problems.
+- **Docs**: Create `docs/debug/DEBUG_*.md` for hard problems.
 - **Logs**: Use `os_log` via the JS bridge. Do not rely on `console.log` alone.
 
 ## ANTI-PATTERNS

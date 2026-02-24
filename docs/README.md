@@ -30,6 +30,7 @@ This repository uses topic-based documentation under `docs/`.
 
 ## Debug
 - Debug docs: [`debug/`](debug/)
+- Quick index: [`debug/README.md`](debug/README.md)
 
 ## Research
 - Competitive analysis: [`research/COMPETITIVE_ANALYSIS.md`](research/COMPETITIVE_ANALYSIS.md)
@@ -39,3 +40,7 @@ This repository uses topic-based documentation under `docs/`.
 
 ## History (Archived)
 - Older docs retained for reference: [`history/`](history/)
+
+### Featured lessons
+
+- Sparkle auto-update lessons learned: [`history/lessons/LESSONS_SPARKLE_AUTO_UPDATE.md`](history/lessons/LESSONS_SPARKLE_AUTO_UPDATE.md)

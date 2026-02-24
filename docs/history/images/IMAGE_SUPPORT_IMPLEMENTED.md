@@ -188,8 +188,8 @@ The file "test-image.png" couldn't be opened because you don't have permission t
 | `Tests/fixtures/images/logo.png` | 测试图片（紫色） |
 | `Tests/fixtures/test1.png`, `test2.png`, `test3.png` | 并排显示测试图片 |
 | `Tests/fixtures/README.md` | 测试说明 |
-| `docs/IMAGE_SUPPORT_PROPOSAL.md` | 初始方案文档 |
-| `docs/IMAGE_SUPPORT_IMPLEMENTED.md` | 本文档 |
+| `docs/history/images/IMAGE_SUPPORT_PROPOSAL.md` | 初始方案文档 |
+| `docs/history/images/IMAGE_SUPPORT_IMPLEMENTED.md` | 本文档 |
 
 ---
 

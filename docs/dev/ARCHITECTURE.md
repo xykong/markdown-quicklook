@@ -73,7 +73,7 @@ graph TD
 ### Phase 5: Host App Browser
 - [ ] Transform the Host App into a full-featured Markdown Viewer.
 - [ ] Support local file browsing, image rendering, and navigation.
-- [ ] See [DESIGN_HOST_APP_BROWSER.md](DESIGN_HOST_APP_BROWSER.md) for detailed architecture.
+- [ ] See [DESIGN_HOST_APP_BROWSER.md](../design/DESIGN_HOST_APP_BROWSER.md) for detailed architecture.
 
 ## 5. Development Workflow
 

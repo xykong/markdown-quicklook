@@ -309,8 +309,8 @@ manage your privacy and security.
 
 ## 📖 相关文档
 
-- **实现细节**：`docs/IMAGE_SUPPORT_IMPLEMENTED.md`
-- **显示行为**：`docs/IMAGE_DISPLAY_BEHAVIOR.md`
+- **实现细节**：`docs/history/images/IMAGE_SUPPORT_IMPLEMENTED.md`
+- **显示行为**：`docs/history/images/IMAGE_DISPLAY_BEHAVIOR.md`
 - **测试文档**：`Tests/fixtures/images-test.md`
 
 ---

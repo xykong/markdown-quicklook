@@ -1,7 +1,6 @@
 # Project Reorganization Summary (Archived)
 
-> Note: This document describes an earlier reorganization and used a `tests/` folder naming in examples.
-> Current convention: use `Tests/` (capital T).
+> Note: This document describes an earlier reorganization. Current convention: use `Tests/` (capital T).
 
 **Date:** 2026-01-31
 
@@ -23,7 +22,7 @@ Reorganized project directory structure to separate documentation and test files
   - Result: Single comprehensive zoom feature documentation
 
 - **Testing Documentation** → `docs/testing/TESTING.md`
-  - Merged: `docs/TESTING.md`, `TEST_INSTRUCTIONS.md`
+  - Merged: `docs/testing/TESTING.md`, `TEST_INSTRUCTIONS.md`
   - Result: Complete testing guide with all test scenarios
 
 #### Moved Files

@@ -150,7 +150,7 @@ if (html.includes('data:image')) {
 - `Sources/MarkdownPreview/PreviewViewController.swift` - WKWebView 配置
 - `web-renderer/src/index.ts` - markdown-it 配置和 Blob 转换
 - `web-renderer/test/renderer.test.ts` - 单元测试（26 个测试全部通过）
-- `docs/BASE64_IMAGE_FIX.md` - 详细技术文档
+- `docs/history/images/BASE64_IMAGE_FIX.md` - 详细技术文档
 
 ## 使用示例
 
