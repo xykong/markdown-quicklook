@@ -22,7 +22,7 @@ Ignoring mis-configured plugin ... plug-ins must be sandboxed
 修复方式（已经在当前项目中完成）：
 
 1. 为 Host App 和 Extension 分别添加 Entitlements 文件：
-   - `Sources/MarkdownQuickLook/MarkdownQuickLook.entitlements`
+   - `Sources/Markdown/Markdown.entitlements`
    - `Sources/MarkdownPreview/MarkdownPreview.entitlements`
 
 2. 在两个 target 的设置中都启用沙箱，并允许用户选择的文件只读访问：
@@ -44,9 +44,9 @@ Ignoring mis-configured plugin ... plug-ins must be sandboxed
 3. 在 `project.yml` 中为两个 target 指定 `CODE_SIGN_ENTITLEMENTS`（当前仓库已配置好）：
 
    ```yaml
-   MarkdownQuickLook:
+   Markdown:
      settings:
-       CODE_SIGN_ENTITLEMENTS: Sources/MarkdownQuickLook/MarkdownQuickLook.entitlements
+       CODE_SIGN_ENTITLEMENTS: Sources/Markdown/Markdown.entitlements
 
    MarkdownPreview:
      settings:
@@ -79,10 +79,10 @@ Ignoring mis-configured plugin ... plug-ins must be sandboxed
 make generate
 
 # 2. 在 Xcode 中打开
-open MarkdownQuickLook.xcodeproj
+open FluxMarkdown.xcodeproj
 
 # 3. 在 Xcode 中:
-#    - 选择 MarkdownQuickLook scheme
+#    - 选择 Markdown scheme
 #    - 按 Cmd+R 运行
 #    - 保持 App 运行状态
 
@@ -114,7 +114,7 @@ log stream --predicate 'subsystem contains "QuickLook" OR subsystem contains "Ma
 
 #### 验证扩展文件完整性
 ```bash
-APP_PATH=~/Library/Developer/Xcode/DerivedData/MarkdownQuickLook-*/Build/Products/Debug/MarkdownQuickLook.app
+APP_PATH=~/Library/Developer/Xcode/DerivedData/FluxMarkdown-*/Build/Products/Debug/FluxMarkdown.app
 
 # 检查扩展是否存在
 ls -la "$APP_PATH/Contents/PlugIns/MarkdownPreview.appex/Contents/MacOS"
@@ -149,14 +149,14 @@ Quick Look 仍然只显示**纯文本内容**，没有任何 Markdown 渲染效�
 
 macOS 在选择 Quick Look Preview Extension 时，会优先考虑**默认处理该 UTI 的应用**。
 
-如果我们的宿主应用 `MarkdownQuickLook.app` 仅仅把自己声明为 `Alternate` 处理程序
+如果我们的宿主应用 `FluxMarkdown.app` 仅仅把自己声明为 `Alternate` 处理程序
 （即 `LSHandlerRank = Alternate`），系统会继续优先使用内置的 Markdown/Plain Text 预览
 器，从而完全绕过 `com.markdownquicklook.app.MarkdownPreview` 扩展——这就导致 Quick Look
 看起来“只有纯文本”，好像插件失效了一样。
 
 **本仓库中已通过以下方式修复：**
 
-在 `Sources/MarkdownQuickLook/Info.plist` 中，将 `CFBundleDocumentTypes` 的
+在 `Sources/Markdown/Info.plist` 中，将 `CFBundleDocumentTypes` 的
 `LSHandlerRank` 调整为：
 
 ```xml
@@ -170,7 +170,7 @@ Quick Look 在预览 `.md` 文件时能实际使用我们的 Preview Extension�
 ### Fix Steps（如何让你的本地环境生效）
 
 1. **更新代码**（如果你是从旧版本升级上来）：
-   - 确认本地 `Sources/MarkdownQuickLook/Info.plist` 中的 `LSHandlerRank` 已是 `Owner`。
+   - 确认本地 `Sources/Markdown/Info.plist` 中的 `LSHandlerRank` 已是 `Owner`。
 
 2. **重新生成并构建工程**：
 
@@ -185,10 +185,10 @@ Quick Look 在预览 `.md` 文件时能实际使用我们的 Preview Extension�
 3. **运行宿主 App 以注册扩展**：
 
    ```bash
-   open ~/Library/Developer/Xcode/DerivedData/MarkdownQuickLook-*/Build/Products/Debug/MarkdownQuickLook.app
+   open ~/Library/Developer/Xcode/DerivedData/FluxMarkdown-*/Build/Products/Debug/FluxMarkdown.app
    ```
 
-   或者在 Xcode 中选择 **MarkdownQuickLook** scheme，按 `Cmd+R` 运行。
+   或者在 Xcode 中选择 **Markdown** scheme，按 `Cmd+R` 运行。
 
 4. **刷新 Quick Look 缓存**：
 

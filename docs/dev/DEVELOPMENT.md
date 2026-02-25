@@ -40,6 +40,11 @@ This generates `dist/index.html` (Single file with inlined assets).
 ## Swift Extension
 The Xcode project is generated using **XcodeGen** (Configuration as Code).
 
+### CI Checks
+
+- Docs internal links: `bash scripts/check-links.sh`
+- Renderer unit tests: `cd web-renderer && npm test`
+
 ### Prerequisites
 - XcodeGen (`brew install xcodegen`)
 
@@ -50,12 +55,12 @@ make generate
 ```
 This command will:
 1. Build the web renderer (npm install & build)
-2. Generate `MarkdownQuickLook.xcodeproj` from `project.yml`
+2. Generate `FluxMarkdown.xcodeproj` from `project.yml`
 
 ### Building the App
 ```bash
 make app
 ```
-Or open `MarkdownQuickLook.xcodeproj` in Xcode.
+Or open `FluxMarkdown.xcodeproj` in Xcode.
 
-**Note**: Do not commit `MarkdownQuickLook.xcodeproj` to git. Commit `project.yml` instead.
+**Note**: Do not commit `FluxMarkdown.xcodeproj` to git. Commit `project.yml` instead.
