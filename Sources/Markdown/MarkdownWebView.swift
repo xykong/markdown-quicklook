@@ -21,10 +21,13 @@ struct MarkdownWebView: NSViewRepresentable {
     var codeHighlightTheme: String = "default"
     
     private static let sharedProcessPool = WKProcessPool()
+    private let localSchemeHandler = LocalSchemeHandler()
     
     func makeCoordinator() -> Coordinator {
         Coordinator()
     }
+    
+    
 
     func makeNSView(context: Context) -> WKWebView {
         let coordinator = context.coordinator
@@ -56,7 +59,10 @@ struct MarkdownWebView: NSViewRepresentable {
         
         webConfiguration.userContentController = userContentController
 
+        webConfiguration.setURLSchemeHandler(localSchemeHandler, forURLScheme: "local-md")
+
         webConfiguration.setValue(true, forKey: "allowUniversalAccessFromFileURLs")
+
 
         #if DEBUG
         webConfiguration.preferences.setValue(true, forKey: "developerExtrasEnabled")
@@ -194,111 +200,22 @@ struct MarkdownWebView: NSViewRepresentable {
             return fileURL.deletingPathExtension().lastPathComponent + ".\(ext)"
         }
         
-        private func mimeTypeForExtension(_ ext: String) -> String {
-            switch ext.lowercased() {
-            case "png": return "image/png"
-            case "jpg", "jpeg": return "image/jpeg"
-            case "gif": return "image/gif"
-            case "svg": return "image/svg+xml"
-            case "webp": return "image/webp"
-            case "ico": return "image/x-icon"
-            case "bmp": return "image/bmp"
-            default: return "image/\(ext)"
-            }
-        }
-        
-        private func collectImageData(from markdownURL: URL, content: String) -> [String: String] {
-            var imageData: [String: String] = [:]
-            let baseDir = markdownURL.deletingLastPathComponent()
-            
-            let fileAccessGranted = markdownURL.startAccessingSecurityScopedResource()
-            let dirAccessGranted = baseDir.startAccessingSecurityScopedResource()
-            
-            defer {
-                if fileAccessGranted {
-                    markdownURL.stopAccessingSecurityScopedResource()
-                }
-                if dirAccessGranted {
-                    baseDir.stopAccessingSecurityScopedResource()
-                }
-            }
-            
-            let pattern = #"!\[[^\]]*\]\(([^)"]+(?:\s+"[^"]*")?)\)"#
-            guard let regex = try? NSRegularExpression(pattern: pattern, options: []) else {
-                return imageData
-            }
-            
-            let nsContent = content as NSString
-            let matches = regex.matches(in: content, options: [], range: NSRange(location: 0, length: nsContent.length))
-            
-            for match in matches {
-                guard match.numberOfRanges >= 2 else { continue }
-                var imagePath = nsContent.substring(with: match.range(at: 1)).trimmingCharacters(in: .whitespaces)
-                
-                if let spaceIndex = imagePath.firstIndex(of: " "), imagePath[spaceIndex...].contains("\"") {
-                    imagePath = String(imagePath[..<spaceIndex])
-                }
-                
-                // Skip network URLs and data URLs
-                if imagePath.starts(with: "http://") || imagePath.starts(with: "https://") || 
-                   imagePath.starts(with: "data:") {
-                    continue
-                }
-                
-                // Store the original path as key (before any transformations)
-                let originalPath = imagePath
-                var cleanPath = imagePath
-                var imageURL: URL
-                
-                // Handle file:// protocol
-                if imagePath.starts(with: "file://") {
-                    cleanPath = String(imagePath.dropFirst("file://".count))
-                    imageURL = URL(fileURLWithPath: cleanPath)
-                }
-                // Handle absolute filesystem paths
-                else if imagePath.starts(with: "/") {
-                    imageURL = URL(fileURLWithPath: imagePath)
-                    cleanPath = imagePath
-                }
-                // Handle relative paths
-                else {
-                    if cleanPath.starts(with: "./") {
-                        cleanPath = String(cleanPath.dropFirst(2))
-                    }
-                    
-                    imageURL = baseDir
-                    for component in cleanPath.split(separator: "/") {
-                        let componentStr = String(component)
-                        
-                        if componentStr == ".." {
-                            imageURL.deleteLastPathComponent()
-                        } else {
-                            if let decoded = componentStr.removingPercentEncoding {
-                                imageURL.appendPathComponent(decoded)
-                            } else {
-                                imageURL.appendPathComponent(componentStr)
-                            }
-                        }
-                    }
-                }
-                
-                do {
-                    let data = try Data(contentsOf: imageURL)
-                    let base64 = data.base64EncodedString()
-                    let mimeType = mimeTypeForExtension(imageURL.pathExtension)
-                    let dataURL = "data:\(mimeType);base64,\(base64)"
-                    
-                    imageData[originalPath] = dataURL
-                } catch {
-                    os_log("🔴 Failed to load image: %{public}@ (original: %{public}@) - Error: %{public}@", log: logger, type: .error, imageURL.path, originalPath, error.localizedDescription)
-                }
-            }
-            
-            return imageData
-        }
-        
         func render(webView: WKWebView, content: String, fileURL: URL?, viewMode: ViewMode, appearanceMode: AppearanceMode, baseFontSize: Double, enableMermaid: Bool, enableKatex: Bool, enableEmoji: Bool, codeHighlightTheme: String) {
             currentFileURL = fileURL
+            
+            if let url = fileURL {
+                // Configure the scheme handler with the base directory
+                // This allows loading local images via local-md:// scheme
+                // which is critical for sandboxed access and proper relative path resolution
+                let baseDir = url.deletingLastPathComponent()
+                // We need to access the security scoped resource for the directory
+                // The handler will manage its own access, but we need to pass the URL
+                // Note: In the main app, we might already have access via the document
+                // but passing the URL allows the handler to work consistently
+                if let handler = webView.configuration.urlSchemeHandler(forURLScheme: "local-md") as? LocalSchemeHandler {
+                    handler.baseDirectory = baseDir
+                }
+            }
 
             pendingRender = { [weak self] in
                 self?.executeRender(webView: webView, content: content, fileURL: fileURL, viewMode: viewMode, appearanceMode: appearanceMode, baseFontSize: baseFontSize, enableMermaid: enableMermaid, enableKatex: enableKatex, enableEmoji: enableEmoji, codeHighlightTheme: codeHighlightTheme)
@@ -326,8 +243,6 @@ struct MarkdownWebView: NSViewRepresentable {
             if let url = fileURL {
                 let baseUrlString = url.deletingLastPathComponent().path
                 options["baseUrl"] = baseUrlString
-
-                options["imageData"] = self.collectImageData(from: url, content: content)
             }
 
             let appearanceName = webView.effectiveAppearance.name
