@@ -14,7 +14,35 @@ echo "📦 Building application..."
 make app
 
 # 2. Locate the built app
-APP_PATH=$(find ~/Library/Developer/Xcode/DerivedData -name "${APP_BUNDLE}" -path "*/Build/Products/Release/*" | head -n 1)
+EXPECTED_VERSION="$(cat .version 2>/dev/null || true)"
+APP_PATH=""
+
+if [ -n "$EXPECTED_VERSION" ]; then
+    while IFS= read -r candidate; do
+        info_plist="$candidate/Contents/Info.plist"
+        if [ ! -f "$info_plist" ]; then
+            continue
+        fi
+
+        candidate_version=$(/usr/bin/defaults read "$info_plist" CFBundleShortVersionString 2>/dev/null || true)
+        candidate_build=$(/usr/bin/defaults read "$info_plist" CFBundleVersion 2>/dev/null || true)
+
+        if [ "$candidate_version" = "$EXPECTED_VERSION" ]; then
+            APP_PATH="$candidate"
+            break
+        fi
+
+        expected_build="$(echo "$EXPECTED_VERSION" | awk -F. '{print $3}')"
+        if [ -n "$expected_build" ] && [ "$candidate_build" = "$expected_build" ]; then
+            APP_PATH="$candidate"
+            break
+        fi
+    done < <(find "$HOME/Library/Developer/Xcode/DerivedData" -name "${APP_BUNDLE}" -path "*/Build/Products/Release/*" 2>/dev/null)
+fi
+
+if [ -z "$APP_PATH" ]; then
+    APP_PATH=$(find "$HOME/Library/Developer/Xcode/DerivedData" -name "${APP_BUNDLE}" -path "*/Build/Products/Release/*" | head -n 1)
+fi
 
 if [ -z "$APP_PATH" ]; then
     echo "❌ Error: Could not find built ${APP_BUNDLE}"

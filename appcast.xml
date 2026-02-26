@@ -12,11 +12,11 @@
             <sparkle:version>195</sparkle:version>
             <sparkle:shortVersionString>1.16.195</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
-            <pubDate>Thu, 26 Feb 2026 03:52:15 +0000</pubDate>
+            <pubDate>Thu, 26 Feb 2026 04:56:34 +0000</pubDate>
             <enclosure
                 url="https://github.com/xykong/flux-markdown/releases/download/v1.16.195/FluxMarkdown.dmg"
-                sparkle:edSignature="repNcI0i1MQlNElgkmyobbtrfsdehm50IoIureDMEswl5bgqD1H/gY+fSbYBxNSuYSHuIxth8ei+9uzkyKauBA=="
-                length="7494961"
+                sparkle:edSignature="gXBe9AM00IoCAM1stTXPrU4hmY76Q7TgSQ2wNdQP1QiyU5BJUoNLISoQHltC5EifyahEszR+KnnumNel90DRAw=="
+                length="10085352"
                 type="application/octet-stream" />
             <description><![CDATA[
                 <h2>更新内容</h2><pre>
