@@ -61,11 +61,15 @@ echo "📂 Preparing DMG content in $TMP_DIR..."
 cp -R "$APP_PATH" "$TMP_DIR/"
 ln -s /Applications "$TMP_DIR/Applications"
 
+# 4.5. Pre-seed the background directory with Retina asset for Finder
+mkdir -p "$TMP_DIR/.background"
+cp assets/dmg/background@2x.png "$TMP_DIR/.background/background@2x.png"
+
 # 5. Create DMG using create-dmg
 echo "💿 Creating styled DMG using create-dmg..."
 
 # Volume name must change to bypass Finder cache for the layout
-VOLUME_NAME="Install FluxMarkdown 5"
+VOLUME_NAME="Install FluxMarkdown 6"
 
 create-dmg \
   --volname "${VOLUME_NAME}" \
