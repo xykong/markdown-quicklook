@@ -60,8 +60,8 @@ echo "📂 Preparing appdmg configuration..."
 APP_DMG_JSON="build/appdmg.json"
 cat << EOF > "$APP_DMG_JSON"
 {
-  "title": "Install ${APP_NAME}",
-  "background": "$(pwd)/assets/dmg/background.png",
+  "title": "Flux Markdown Release",
+  "background": "$(pwd)/assets/dmg/background.tiff",
   "icon-size": 100,
   "contents": [
     { "x": 150, "y": 200, "type": "file", "path": "${APP_PATH}" },
