@@ -65,15 +65,14 @@ ln -s /Applications "$TMP_DIR/Applications"
 echo "💿 Creating styled DMG using create-dmg..."
 
 # Volume name must change to bypass Finder cache for the layout
-VOLUME_NAME="Install FluxMarkdown 3"
+VOLUME_NAME="Install FluxMarkdown 4"
 
 create-dmg \
   --volname "${VOLUME_NAME}" \
-  --background "assets/dmg/background.tiff" \
+  --background "assets/dmg/background.png" \
   --window-pos 200 120 \
   --window-size 600 400 \
   --icon-size 100 \
-  --icon "${APP_BUNDLE}" 150 200 \
   --hide-extension "${APP_BUNDLE}" \
   --icon "Applications" 450 200 \
   "$OUTPUT_DIR/$DMG_NAME" \
