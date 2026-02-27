@@ -29,6 +29,10 @@
   - 将废弃的 Python LaunchServices 脚本替换为 Swift 原生实现
   - 修复 macOS 12+ 不再自带 LaunchServices Python 模块的问题
 
+- **应用图标透明通道修复**: 修复 macOS 12.7 和 15.7 上应用图标显示白色方形背景的问题
+  - 使用 AI 图像分割 (rembg) 精准移除白色背景，保留图标内部的白色纸张区域
+  - 强制对齐图标边缘为数学直线，消除 AI 抠图产生的波浪边缘
+  - 完美保留下拉阴影的半透明渐变效果
 ### Changed
 - **Troubleshooting 文档优化**: 在 `docs/user/TROUBLESHOOTING.md` 顶部添加提示，引导普通用户先看 HELP.md
 
