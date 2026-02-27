@@ -59,22 +59,23 @@ rm -f "$OUTPUT_DIR/$DMG_NAME"
 TMP_DIR=$(mktemp -d)
 echo "📂 Preparing DMG content in $TMP_DIR..."
 cp -R "$APP_PATH" "$TMP_DIR/"
+ln -s /Applications "$TMP_DIR/Applications"
 
-  # 5. Create DMG using create-dmg
-  echo "💿 Creating styled DMG using create-dmg..."
+# 5. Create DMG using create-dmg
+echo "💿 Creating styled DMG using create-dmg..."
 
-  # Volume name must change to bypass Finder cache for the layout
-    VOLUME_NAME="Install FluxMarkdown 2"
+# Volume name must change to bypass Finder cache for the layout
+VOLUME_NAME="Install FluxMarkdown 3"
 
-  create-dmg \
+create-dmg \
   --volname "${VOLUME_NAME}" \
-  --background "assets/dmg/background.png" \
+  --background "assets/dmg/background.tiff" \
   --window-pos 200 120 \
   --window-size 600 400 \
   --icon-size 100 \
   --icon "${APP_BUNDLE}" 150 200 \
   --hide-extension "${APP_BUNDLE}" \
-  --app-drop-link 450 200 \
+  --icon "Applications" 450 200 \
   "$OUTPUT_DIR/$DMG_NAME" \
   "$TMP_DIR/"
 
