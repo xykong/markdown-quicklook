@@ -59,8 +59,6 @@ rm -f "$OUTPUT_DIR/$DMG_NAME"
 TMP_DIR=$(mktemp -d)
 echo "📂 Preparing DMG content in $TMP_DIR..."
 cp -R "$APP_PATH" "$TMP_DIR/"
-ln -s /Applications "$TMP_DIR/Applications"
-
 # 4.5. Pre-seed the background directory with Retina asset for Finder
 mkdir -p "$TMP_DIR/.background"
 cp assets/dmg/background@2x.png "$TMP_DIR/.background/background@2x.png"
@@ -69,7 +67,7 @@ cp assets/dmg/background@2x.png "$TMP_DIR/.background/background@2x.png"
 echo "💿 Creating styled DMG using create-dmg..."
 
 # Volume name must change to bypass Finder cache for the layout
-VOLUME_NAME="Install FluxMarkdown 14"
+VOLUME_NAME="Install FluxMarkdown 15"
 
 create-dmg \
   --volname "${VOLUME_NAME}" \
@@ -79,7 +77,7 @@ create-dmg \
   --icon-size 100 \
   --icon "${APP_BUNDLE}" 180 220 \
   --hide-extension "${APP_BUNDLE}" \
-  --icon "Applications" 480 220 \
+  --app-drop-link 480 220 \
   --icon ".background" 120 120 \
   "$OUTPUT_DIR/$DMG_NAME" \
   "$TMP_DIR/"
