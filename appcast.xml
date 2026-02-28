@@ -7,6 +7,29 @@
         <language>zh-CN</language>
 
         <item>
+            <title>Version 1.16.231</title>
+            <link>https://github.com/xykong/flux-markdown/releases/tag/v1.16.231</link>
+            <sparkle:version>231</sparkle:version>
+            <sparkle:shortVersionString>1.16.231</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>11.0</sparkle:minimumSystemVersion>
+            <pubDate>Sat, 28 Feb 2026 04:14:25 +0000</pubDate>
+            <enclosure
+                url="https://github.com/xykong/flux-markdown/releases/download/v1.16.231/FluxMarkdown.dmg"
+                sparkle:edSignature="EknyQP8jS2PbN+pMk7iAW9nw4MU7h7HFaYiBVKFuAcBkyVGbVy+NAC77hDMluJF0I7ItpDD1IDdjrjVWA0+hAA=="
+                length="9817277"
+                type="application/octet-stream" />
+            <description><![CDATA[
+                <h2>更新内容</h2><pre>
+Fixed
+- **搜索框自动大写修复**: 禁用 macOS 在搜索框中自动将句首字母大写的行为
+  - 添加 `autocapitalize="off"` 属性禁用自动大写
+  - 添加 `autocorrect="off"` 属性禁用自动纠正
+  - 添加 `autocomplete="off"` 属性禁用自动完成
+  - 添加 `spellcheck="false"` 属性禁用拼写检查</pre><p><a href="https://github.com/xykong/flux-markdown/releases/tag/v1.16.231">查看完整更新日志</a></p>
+            ]]></description>
+        </item>
+        
+        <item>
             <title>Version 1.16.226</title>
             <link>https://github.com/xykong/flux-markdown/releases/tag/v1.16.226</link>
             <sparkle:version>226</sparkle:version>
