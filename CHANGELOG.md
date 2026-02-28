@@ -40,6 +40,28 @@
 ## [Unreleased]
 _无待发布的变更_
 
+## [1.16.226] - 2026-02-28
+
+### Added
+- **DMG 安装界面设计**: 全新的 DMG 安装界面，提供专业的用户体验
+  - 现代化明亮风格背景设计，包含中文安装指引（「拖拽到 Applications 安装」）
+  - Retina/HiDPI 支持：使用多分辨率 TIFF 背景图，确保在 Retina 显示屏上文字清晰锐利
+  - 新增 `assets/dmg/` 目录存放 DMG 相关资源（SVG 源文件、PNG 背景图、TIFF 多分辨率图）
+
+### Changed
+- **DMG 构建工具迁移**: 从已废弃的 `appdmg` 迁移到 `create-dmg`
+  - 更可靠的背景图片渲染
+  - 原生支持 macOS Finder 布局特性
+
+### Fixed
+- **DMG 背景图片显示**: 修复背景图片不显示、只显示在左上角、不铺满窗口等问题
+- **DMG Retina 支持**: 修复 Retina 显示屏上背景文字模糊的问题
+- **DMG 窗口滚动条**: 修复 DMG 窗口出现横向和纵向滚动条的问题
+  - 调整窗口尺寸以适配 macOS 标题栏高度
+  - 隐藏文件 `.background` 定位到窗口内，避免触发滚动条
+- **Applications 文件夹图标**: 修复 Applications 快捷方式显示为空白方框的问题
+  - 使用 `--app-drop-link` 参数确保正确的 Finder 图标渲染
+
 ## [1.16.195] - 2026-02-26
 
 ### Changed
