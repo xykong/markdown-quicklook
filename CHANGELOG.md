@@ -38,8 +38,12 @@
 - **Troubleshooting 文档优化**: 在 `docs/user/TROUBLESHOOTING.md` 顶部添加提示，引导普通用户先看 HELP.md
 
 ## [Unreleased]
-_无待发布的变更_
 
+### Fixed
+- **Help 菜单修复**: 修复 Help 菜单显示 "Help isn't available for FluxMarkdown" 的问题
+  - 添加自定义 Help 菜单，替换默认的 macOS Help 菜单
+  - FluxMarkdown Help (Cmd+?) 打开在线帮助文档
+  - 添加 README、Report an Issue、Release Notes 快捷链接
 ## [1.16.231] - 2026-02-28
 
 ### Fixed

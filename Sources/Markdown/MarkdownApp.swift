@@ -153,6 +153,36 @@ struct MarkdownApp: App {
                 .keyboardShortcut("f", modifiers: [.command])
             }
 
+            CommandGroup(replacing: .help) {
+                Button(NSLocalizedString("FluxMarkdown Help", comment: "Help menu item")) {
+                    if let url = URL(string: "https://github.com/xykong/flux-markdown/blob/master/docs/user/HELP.md") {
+                        NSWorkspace.shared.open(url)
+                    }
+                }
+                .keyboardShortcut("?", modifiers: [.command])
+                
+                Divider()
+                
+                Button(NSLocalizedString("README", comment: "README menu item")) {
+                    if let url = URL(string: "https://github.com/xykong/flux-markdown#readme") {
+                        NSWorkspace.shared.open(url)
+                    }
+                }
+                
+                Button(NSLocalizedString("Report an Issue", comment: "Report issue menu item")) {
+                    if let url = URL(string: "https://github.com/xykong/flux-markdown/issues") {
+                        NSWorkspace.shared.open(url)
+                    }
+                }
+                
+                Divider()
+                
+                Button(NSLocalizedString("Release Notes", comment: "Release notes menu item")) {
+                    if let url = URL(string: "https://github.com/xykong/flux-markdown/releases") {
+                        NSWorkspace.shared.open(url)
+                    }
+                }
+            }
             CommandGroup(after: .toolbar) {
                 Button(action: {
                     viewMode = (viewMode == .preview) ? .source : .preview
