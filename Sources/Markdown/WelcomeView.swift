@@ -148,7 +148,7 @@ struct WelcomeView: View {
                     .foregroundColor(Color.secondary.opacity(0.6))
 
                 Button("Troubleshooting") {
-                    if let url = URL(string: "https://github.com/xykong/flux-markdown/blob/main/docs/user/HELP.md") {
+                    if let url = URL(string: "https://github.com/xykong/flux-markdown/blob/master/docs/user/HELP.md") {
                         openURL(url)
                     }
                 }
