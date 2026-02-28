@@ -41,6 +41,11 @@ export class SearchUI {
 		this.searchInput.className = "search-input";
 		this.searchInput.placeholder = "Find in page";
 		this.searchInput.setAttribute("aria-label", "Search query");
+		// Disable macOS auto-capitalization, auto-correct, and spellcheck
+		this.searchInput.setAttribute("autocapitalize", "off");
+		this.searchInput.setAttribute("autocomplete", "off");
+		this.searchInput.setAttribute("autocorrect", "off");
+		this.searchInput.setAttribute("spellcheck", "false");
 
 		this.matchCounter = document.createElement("span");
 		this.matchCounter.className = "search-match-counter";
