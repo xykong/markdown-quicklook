@@ -748,6 +748,14 @@ function unifyUnderscoreAndHyphen(text: string): string {
     return text.replace(/[_-]/g, '~');
 }
 
+function stripHyphens(text: string): string {
+    return text.toLowerCase().replace(/-/g, '');
+}
+
+function stripHyphensAndUnderscores(text: string): string {
+    return text.toLowerCase().replace(/[-_]/g, '');
+}
+
 function findElementByAnchor(anchorId: string): HTMLElement | null {
     const allElementsWithId = document.querySelectorAll('[id]');
     const exactMatch = document.getElementById(anchorId);
@@ -763,6 +771,21 @@ function findElementByAnchor(anchorId: string): HTMLElement | null {
     for (const element of allElementsWithId) {
         const id = element.getAttribute('id');
         if (id && unifyUnderscoreAndHyphen(compressMultipleHyphens(id)) === level3Target) return element as HTMLElement;
+    }
+
+    // Level 4: strip all hyphens, then compare (handles AI-generated anchors that omit
+    // hyphens at CJK/ASCII boundaries, e.g. '故障-6镜像' vs actual '故障-6-镜像')
+    const level4Target = stripHyphens(anchorId);
+    for (const element of allElementsWithId) {
+        const id = element.getAttribute('id');
+        if (id && stripHyphens(id) === level4Target) return element as HTMLElement;
+    }
+
+    // Level 5: strip all hyphens and underscores (most permissive fallback)
+    const level5Target = stripHyphensAndUnderscores(anchorId);
+    for (const element of allElementsWithId) {
+        const id = element.getAttribute('id');
+        if (id && stripHyphensAndUnderscores(id) === level5Target) return element as HTMLElement;
     }
 
     return null;

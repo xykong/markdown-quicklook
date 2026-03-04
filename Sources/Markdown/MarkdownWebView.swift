@@ -110,6 +110,7 @@ struct MarkdownWebView: NSViewRepresentable {
         var pendingRender: (() -> Void)?
         weak var currentWebView: WKWebView?
         var currentFileURL: URL?
+        var pendingAnchor: String?  // anchor to scroll to after next render
         
         override init() {
             super.init()
@@ -283,11 +284,50 @@ struct MarkdownWebView: NSViewRepresentable {
                 if let error = error {
                     os_log("JS Error: %{public}@", log: self?.logger ?? .default, type: .error, error.localizedDescription)
                 }
+                // After render completes, scroll to any pending anchor for this file
+                if let fileURL = fileURL,
+                   let anchor = PendingAnchorStore.shared.consume(for: fileURL.path),
+                   viewMode == .preview {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                        self?.scrollToAnchor(anchor, in: webView)
+                    }
             }
         }
+    }
 
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
             os_log("WebView didFinish navigation", log: logger, type: .debug)
+        }
+
+        /// Scroll to an anchor in the given WebView using the same five-level fuzzy matching
+        /// logic as `findElementByAnchor` in the JS renderer.
+        private func scrollToAnchor(_ anchor: String, in webView: WKWebView) {
+            guard let anchorData = try? JSONSerialization.data(withJSONObject: [anchor]),
+                  let anchorArg = String(data: anchorData, encoding: .utf8) else { return }
+            let js = """
+                (function() {
+                    var id = \(anchorArg)[0];
+                    function compress(s){ return s.replace(/-+/g,'-'); }
+                    function unify(s){ return s.replace(/[_-]/g,'~'); }
+                    function stripH(s){ return s.toLowerCase().replace(/-/g,''); }
+                    function stripHU(s){ return s.toLowerCase().replace(/[-_]/g,''); }
+                    var all = document.querySelectorAll('[id]');
+                    var el = document.getElementById(id);
+                    var l2=compress(id), l3=unify(l2), l4=stripH(id), l5=stripHU(id);
+                    if(!el) for(var i=0;i<all.length;i++){ var aid=all[i].getAttribute('id'); if(compress(aid)===l2){el=all[i];break;} }
+                    if(!el) for(var i=0;i<all.length;i++){ var aid=all[i].getAttribute('id'); if(unify(compress(aid))===l3){el=all[i];break;} }
+                    if(!el) for(var i=0;i<all.length;i++){ var aid=all[i].getAttribute('id'); if(stripH(aid)===l4){el=all[i];break;} }
+                    if(!el) for(var i=0;i<all.length;i++){ var aid=all[i].getAttribute('id'); if(stripHU(aid)===l5){el=all[i];break;} }
+                    if(el){ el.scrollIntoView({behavior:'smooth',block:'start'}); }
+                })();
+                """
+            webView.evaluateJavaScript(js) { [weak self] _, error in
+                if let error = error {
+                    os_log("🔴 scrollToAnchor failed: %{public}@", log: self?.logger ?? .default, type: .error, error.localizedDescription)
+                } else {
+                    os_log("🟢 scrollToAnchor: %{public}@", log: self?.logger ?? .default, type: .default, anchor)
+                }
+            }
         }
         
         func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
@@ -478,20 +518,35 @@ struct MarkdownWebView: NSViewRepresentable {
                 return
             }
             
+            // Separate fragment (#anchor) from the path portion
+            let hrefPath: String
+            let fragment: String?
+            if let hashRange = href.range(of: "#") {
+                hrefPath = String(href[href.startIndex..<hashRange.lowerBound])
+                fragment = String(href[hashRange.upperBound...])
+            } else {
+                hrefPath = href
+                fragment = nil
+            }
+            
+            // Build the absolute target URL from the path portion only
             let baseDir = fileURL.deletingLastPathComponent()
             var targetURL: URL
             
-            if href.starts(with: "file://") {
-                guard let url = URL(string: href) else {
-                    os_log("🔴 Invalid file URL: %{public}@", log: logger, type: .error, href)
+            if hrefPath.isEmpty {
+                // href was pure anchor ("#foo") — same file, JS handles it
+                return
+            } else if hrefPath.starts(with: "file://") {
+                guard let url = URL(string: hrefPath) else {
+                    os_log("🔴 Invalid file URL: %{public}@", log: logger, type: .error, hrefPath)
                     return
                 }
                 targetURL = url
-            } else if href.starts(with: "/") {
-                targetURL = URL(fileURLWithPath: href)
+            } else if hrefPath.starts(with: "/") {
+                targetURL = URL(fileURLWithPath: hrefPath)
             } else {
                 targetURL = baseDir
-                for component in href.split(separator: "/") {
+                for component in hrefPath.split(separator: "/") {
                     let componentStr = String(component)
                     if componentStr == ".." {
                         targetURL.deleteLastPathComponent()
@@ -501,8 +556,14 @@ struct MarkdownWebView: NSViewRepresentable {
                 }
             }
             
-            os_log("🔵 Opening local file: %{public}@ (base: %{public}@, href: %{public}@)", 
-                   log: logger, type: .default, targetURL.path, baseDir.path, href)
+            os_log("🔵 Opening local file: %{public}@ anchor: %{public}@ (href: %{public}@)",
+                   log: logger, type: .default, targetURL.path, fragment ?? "(none)", href)
+            
+            // Store the pending anchor so the new window's renderer can scroll to it
+            if let anchor = fragment, !anchor.isEmpty {
+                PendingAnchorStore.shared.set(anchor: anchor, for: targetURL.path)
+            }
+            
             NSWorkspace.shared.open(targetURL)
         }
         
@@ -593,5 +654,31 @@ class ResizableWKWebView: WKWebView {
         self.allowsMagnification = true
         self.magnification = currentZoomLevel
         os_log("🔵 Enabled WKWebView magnification, initial level: %.2f", log: logger, type: .default, currentZoomLevel)
+    }
+}
+
+
+/// Thread-safe store for pending anchor fragments.
+/// When the app opens a cross-file md link with an anchor (e.g. `notes.md#section`),
+/// the anchor is stored here keyed by file path. The target window's renderer
+/// consumes and clears it after the first successful render.
+final class PendingAnchorStore {
+    static let shared = PendingAnchorStore()
+    private var store: [String: String] = [:]
+    private let lock = NSLock()
+
+    private init() {}
+
+    func set(anchor: String, for path: String) {
+        lock.lock(); defer { lock.unlock() }
+        store[path] = anchor
+    }
+
+    /// Returns and removes the stored anchor for the given path, or nil if none.
+    func consume(for path: String) -> String? {
+        lock.lock(); defer { lock.unlock() }
+        guard let anchor = store[path] else { return nil }
+        store.removeValue(forKey: path)
+        return anchor
     }
 }
