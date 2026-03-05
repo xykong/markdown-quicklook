@@ -826,6 +826,71 @@ function handleAnchorClick(e: Event) {
 
 document.addEventListener('click', handleAnchorClick, { capture: true, passive: false });
 
+function getLinkStatusText(anchor: HTMLAnchorElement): string | null {
+    const href = anchor.getAttribute('href');
+    if (!href || href === '#') return null;
+
+    let decoded = href;
+    try { decoded = decodeURIComponent(href); } catch { /* malformed encoding — keep raw */ }
+
+    const displayText = anchor.textContent?.trim() ?? '';
+    if (displayText === decoded || displayText === href) return null;
+
+    try {
+        const url = new URL(href);
+        if (displayText === url.host || displayText === url.hostname) return null;
+    } catch {
+        // relative href or anchor — not a valid absolute URL, that's fine
+    }
+
+    return decoded;
+}
+
+function getStatusIcon(href: string): string {
+    if (href.startsWith('#')) return '⚓';
+    if (href.startsWith('mailto:')) return '✉️';
+    return '🔗';
+}
+
+let _statusBarEl: HTMLElement | null = null;
+function getStatusBar(): HTMLElement | null {
+    if (!_statusBarEl) {
+        _statusBarEl = document.getElementById('link-status-bar');
+    }
+    return _statusBarEl;
+}
+
+function handleAnchorMouseOver(e: MouseEvent) {
+    const target = e.target as HTMLElement;
+    const anchor = target.closest('a') as HTMLAnchorElement | null;
+    const bar = getStatusBar();
+    if (!bar || !anchor) return;
+
+    const linkTarget = getLinkStatusText(anchor);
+    if (linkTarget) {
+        const icon = getStatusIcon(linkTarget);
+        bar.innerHTML = `<span class="status-icon">${icon}</span>${escapeHtml(linkTarget)}`;
+        bar.classList.add('visible');
+    }
+}
+
+function handleAnchorMouseOut(e: MouseEvent) {
+    const bar = getStatusBar();
+    if (!bar) return;
+
+    const target = e.target as HTMLElement;
+    const anchor = target.closest('a');
+    if (!anchor) return;
+
+    const relatedTarget = e.relatedTarget as HTMLElement | null;
+    if (relatedTarget && anchor.contains(relatedTarget)) return;
+
+    bar.classList.remove('visible');
+}
+
+document.addEventListener('mouseover', handleAnchorMouseOver);
+document.addEventListener('mouseout', handleAnchorMouseOut);
+
 let currentZoomLevel = 1.0;
 
 window.setZoomLevel = function(level: number) {
